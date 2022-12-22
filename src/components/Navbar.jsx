@@ -1,9 +1,13 @@
 
 export default function Navbar() {
+
+    const dateNow = new Date().toLocaleDateString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit'});
+
   return (
     <nav className="navbar navbar-dark bg-dark fixed-top">
         <div className="container-fluid">
             <a className="navbar-brand" href="#">MONITOREO DE MOVIMIENTOS</a>
+            <span className="navbar-brand" >{dateNow}</span>
             <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
             <span className="navbar-toggler-icon"></span>
             </button>

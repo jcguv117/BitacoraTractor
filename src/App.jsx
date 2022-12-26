@@ -1,15 +1,12 @@
-import { useState } from 'react'
-import Navbar from './components/Navbar'
-import DtMovimientos from './components/DtMovimientos'
+import { BrowserRouter } from "react-router-dom"
+import { AppRouter } from "./router"
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <div className="App">
-      <Navbar/>
-      <DtMovimientos/>
-    </div>
+    <BrowserRouter>
+      <AppRouter/>
+    </BrowserRouter>
   )
 }
 

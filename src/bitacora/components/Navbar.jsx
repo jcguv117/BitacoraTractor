@@ -1,8 +1,7 @@
 
-export default function Navbar() {
+const dateNow = new Date().toLocaleDateString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit'});
 
-    const dateNow = new Date().toLocaleDateString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit'});
-
+export const Navbar = () => {
   return (
     <nav className="navbar navbar-dark bg-dark fixed-top">
         <div className="container-fluid">

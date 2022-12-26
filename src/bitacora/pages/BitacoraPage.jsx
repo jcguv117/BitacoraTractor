@@ -1,14 +1,14 @@
-import React from 'react'
+import {Navbar} from "../"
 
-export default function DtMovimientos() {
-
+export const BitacoraPage = () => {
     
   return (
     <div className='container mb-4 p-2'>
+        <Navbar/>
         <br />
         <br />
         <div className='m-2 p-2'></div>
-        <table id="example" className='table table-hover'>
+        <table id="example" className='table table-hover overflow-auto'>
             <thead className='table-group-divider'>
                 <tr>
                     <th>No</th>

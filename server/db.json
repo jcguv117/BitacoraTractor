@@ -1,9 +1,9 @@
-export default function getData() {  
-  return [
+{
+  "bitacora": [
     {
       "id": 28,
       "tractor": 436,
-      "operador": "ALFREDO ARCE",
+      "operador": "ALFREDO MODIFICADO",
       "caja": 655242,
       "cliente": "RHEEM",
       "origen": "RHEEM CAL",
@@ -1895,6 +1895,42 @@ export default function getData() {
       "observacion": "FALSO",
       "placas": "",
       "sistema": ""
+    },
+    {
+      "tractor": "PRUEBA TRACTOR",
+      "operador": "PRUEBA OPERADOR",
+      "caja": "PRUEBA",
+      "cliente": "ANONIMO",
+      "origen": "AQUI",
+      "destino": "ALLA",
+      "tipo": "IMPORTE",
+      "aduana": "ELQUESEA",
+      "no_sello": "1234",
+      "id": 85
+    },
+    {
+      "tractor": "",
+      "operador": "",
+      "caja": "",
+      "cliente": "",
+      "origen": "",
+      "destino": "",
+      "tipo": "",
+      "aduana": "",
+      "no_sello": "",
+      "id": 86
+    },
+    {
+      "tractor": "tractor",
+      "operador": "ok",
+      "caja": "caja",
+      "cliente": "anonimo",
+      "origen": "su",
+      "destino": "all",
+      "tipo": "importe",
+      "aduana": "NVOLAREDO",
+      "no_sello": "124",
+      "id": 87
     }
   ]
 }

@@ -23,6 +23,7 @@ import { TextField } from '@mui/material';
  } = data;
 //  const {id,name,email,phone,dob}=data
 
+console.log(data)
   return (
     <div>
       <Dialog

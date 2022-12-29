@@ -6,7 +6,8 @@ import { Grid, Button } from '@mui/material';
 import FormDialog from './DialogForm';
 import getData from '../datos';
 
-  const initialValue = { name: "", email: "", phone: "", dob: "" }
+  // const initialValue = { name: "", email: "", phone: "", dob: "" }
+  const initialValue = { tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "" }
   const GridTable = () => {
     //FormDialog 
     const [gridApi, setGridApi] = useState(null)
@@ -16,6 +17,16 @@ import getData from '../datos';
     const handleClickOpen = () => {
       setOpen(true);
     };
+
+    const url = `http://localhost:4000/bitacora`;
+    // calling getBitacora function for first time 
+    useEffect(() => {
+      getBitacora()
+    }, [])
+    //fetching user data from server
+    const getBitacora = () => {
+      fetch(url).then(resp => resp.json()).then(resp => setTableData(resp))
+    }
 
     const handleClose = () => {
       setOpen(false);
@@ -39,7 +50,7 @@ import getData from '../datos';
   const handleDelete = (id) => {
     const confirm = window.confirm("Are you sure, you want to delete this row", id)
     if (confirm) {
-      fetch(url + `/${id}`, { method: "DELETE" }).then(resp => resp.json()).then(resp => getUsers())
+      fetch(url + `/${id}`, { method: "DELETE" }).then(resp => resp.json()).then(resp => getBitacora())
 
     }
   }
@@ -54,7 +65,7 @@ import getData from '../datos';
       }).then(resp => resp.json())
         .then(resp => {
           handleClose()
-          getUsers()
+          getBitacora()
 
         })
     } else {
@@ -66,7 +77,7 @@ import getData from '../datos';
       }).then(resp => resp.json())
         .then(resp => {
           handleClose()
-          getUsers()
+          getBitacora()
         })
     }
   }
@@ -75,10 +86,11 @@ import getData from '../datos';
     const gridRef = useRef();
     const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
+    // const [rowData, setRowData] = useState(getData());
     const [rowData, setRowData] = useState(getData());
     const [columnDefs, setColumnDefs] = useState([
-      { field: "no" },
-      { field: "tractor", },
+      { field: "id" },
+      { field: "tractor"},
       { field: "operador" },
       { field: "caja" },
       { field: "cliente" },
@@ -97,8 +109,14 @@ import getData from '../datos';
       { field: "imporlot" },
       { field: "hra_entrega" },
       { field: "observacion" },
-      { field: "placas" },
-      { field: "sistema", minWidth: 550  }
+      { field: "placas"},
+      { field: "sistema", minWidth: 550  },
+      {
+        headerName: "Actions", field: "id", minWidth: 250, cellRendererFramework: (params) => <div>
+          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}>Actualizar</Button>
+          <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}>Eliminar</Button>
+        </div>
+      }
     ]);
     const defaultColDef = useMemo(() => {
       return {
@@ -129,7 +147,7 @@ import getData from '../datos';
             <div style={gridStyle} className="ag-theme-alpine">
               <AgGridReact
                 ref={gridRef}
-                rowData={rowData}
+                rowData={tableData}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 pagination={true}

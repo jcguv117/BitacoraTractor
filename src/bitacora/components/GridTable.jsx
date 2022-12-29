@@ -4,9 +4,7 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { Grid, Button } from '@mui/material';
 import FormDialog from './DialogForm';
-import getData from '../datos';
 
-  // const initialValue = { name: "", email: "", phone: "", dob: "" }
   const initialValue = { tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "" }
   const GridTable = () => {
     //FormDialog 
@@ -34,8 +32,7 @@ import getData from '../datos';
     };
     const onChange = (e) => {
       const { value, id } = e.target
-      // console.log(value,id)
-      setFormData({ ...formData, [id]: value })
+      setFormData({ ...formData, [id]: value.toUpperCase() })
     }
     const onGridReady = (params) => {
       setGridApi(params)
@@ -86,10 +83,14 @@ import getData from '../datos';
     const gridRef = useRef();
     const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
-    // const [rowData, setRowData] = useState(getData());
-    const [rowData, setRowData] = useState(getData());
     const [columnDefs, setColumnDefs] = useState([
-      { field: "id" },
+      {
+        headerName: "Actions", field: "id", minWidth: 250, cellRendererFramework: (params) => <div>
+          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}>Actualizar</Button>
+          <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}>Eliminar</Button>
+        </div>
+      },
+      { field: "id", headerName:"#", sort: 'desc' },
       { field: "tractor"},
       { field: "operador" },
       { field: "caja" },
@@ -110,13 +111,7 @@ import getData from '../datos';
       { field: "hra_entrega" },
       { field: "observacion" },
       { field: "placas"},
-      { field: "sistema", minWidth: 550  },
-      {
-        headerName: "Actions", field: "id", minWidth: 250, cellRendererFramework: (params) => <div>
-          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}>Actualizar</Button>
-          <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}>Eliminar</Button>
-        </div>
-      }
+      { field: "sistema", minWidth: 550  }
     ]);
     const defaultColDef = useMemo(() => {
       return {
@@ -138,7 +133,7 @@ import getData from '../datos';
       <div style={containerStyle}>
         <div className="example-wrapper">
         <div style={{ margin: '10px 0' }}>
-          <button onClick={onBtnExport}>Download CSV export file</button>
+          <button onClick={onBtnExport}>Exportar a CSV</button>
         </div>
           <div className="grid-wrapper">
           <Grid align="right">

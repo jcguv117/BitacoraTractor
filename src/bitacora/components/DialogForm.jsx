@@ -21,9 +21,7 @@ import { TextField } from '@mui/material';
     aduana,
     no_sello,
  } = data;
-//  const {id,name,email,phone,dob}=data
 
-console.log(data)
   return (
     <div>
       <Dialog

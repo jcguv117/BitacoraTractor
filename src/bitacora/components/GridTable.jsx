@@ -85,9 +85,9 @@ import FormDialog from './DialogForm';
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const [columnDefs, setColumnDefs] = useState([
       {
-        headerName: "Actions", field: "id", minWidth: 250, cellRendererFramework: (params) => <div>
-          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}>Actualizar</Button>
-          <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}>Eliminar</Button>
+        headerName: "Actions", field: "id", sortable: false, filter: false, minWidth: 170, cellRendererFramework: (params) => <div>
+          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><i className="fa-solid fa-pen-to-square"></i></Button>
+          <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}><i className="fa-solid fa-trash-can"></i></Button>
         </div>
       },
       { field: "id", headerName:"#", sort: 'desc' },
@@ -113,6 +113,7 @@ import FormDialog from './DialogForm';
       { field: "placas"},
       { field: "sistema", minWidth: 550  }
     ]);
+
     const defaultColDef = useMemo(() => {
       return {
         flex: 1,
@@ -132,12 +133,10 @@ import FormDialog from './DialogForm';
     return (
       <div style={containerStyle}>
         <div className="example-wrapper">
-        <div style={{ margin: '10px 0' }}>
-          <button onClick={onBtnExport}>Exportar a CSV</button>
-        </div>
           <div className="grid-wrapper">
           <Grid align="right">
-              <Button variant="contained" color="primary" onClick={handleClickOpen}>Agregar</Button>
+              <Button variant="contained" color="primary" onClick={onBtnExport}><i className="fa-solid fa-file-export"></i> Exportar a CSV</Button>
+              <Button variant="contained" color="primary" onClick={handleClickOpen}><i className="fa-solid fa-plus"></i> Agregar</Button>
           </Grid>
             <div style={gridStyle} className="ag-theme-alpine">
               <AgGridReact

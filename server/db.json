@@ -1897,7 +1897,7 @@
       "sistema": ""
     },
     {
-      "tractor": "PRUEBA TRACTOR",
+      "tractor": "PRUEBA TRACTORrrr",
       "operador": "PRUEBA OPERADOR",
       "caja": "PRUEBA",
       "cliente": "ANONIMO",
@@ -1907,42 +1907,6 @@
       "aduana": "ELQUESEA",
       "no_sello": "1234",
       "id": 85
-    },
-    {
-      "tractor": "",
-      "operador": "",
-      "caja": "",
-      "cliente": "",
-      "origen": "",
-      "destino": "",
-      "tipo": "",
-      "aduana": "",
-      "no_sello": "",
-      "id": 86
-    },
-    {
-      "tractor": "tractor",
-      "operador": "ok",
-      "caja": "caja",
-      "cliente": "anonimo",
-      "origen": "su",
-      "destino": "all",
-      "tipo": "importe",
-      "aduana": "NVOLAREDO",
-      "no_sello": "124",
-      "id": 87
-    },
-    {
-      "tractor": "otro",
-      "operador": "otro",
-      "caja": "otro",
-      "cliente": "otro",
-      "origen": "origen",
-      "destino": "destino",
-      "tipo": "otro",
-      "aduana": "ok",
-      "no_sello": "124kkk",
-      "id": 88
     }
   ]
 }

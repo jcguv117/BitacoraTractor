@@ -5,12 +5,12 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { Grid, Button } from '@mui/material';
 import FormDialog from './DialogForm';
 
-  const initialValue = { tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "" }
+  const initialValue = { tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", hra_llegada: "" }
   const GridTable = () => {
     //FormDialog 
     const [gridApi, setGridApi] = useState(null)
     const [tableData, setTableData] = useState(null)
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState(initialValue)
     const handleClickOpen = () => {
       setOpen(true);
@@ -109,16 +109,16 @@ import FormDialog from './DialogForm';
       { field: "sello_nuevo" },
       { field: "imporlot" },
       { field: "hra_entrega" },
-      { field: "observacion" },
       { field: "placas"},
-      { field: "sistema", minWidth: 550  }
+      { field: "observacion", minWidth: 250 },
+      { field: "sistema" }
     ]);
 
     const defaultColDef = useMemo(() => {
       return {
         flex: 1,
         minWidth: 110,
-        editable: false,
+        editable: true,
         resizable: true,
         sortable: true,
         filter: true,
@@ -129,6 +129,19 @@ import FormDialog from './DialogForm';
       gridRef.current.api.exportDataAsCsv();
     }, []);
     
+    const onCellEditingStarted = useCallback((event) => {
+      console.log('cellEditingStarted');
+      // console.log(event);
+    }, []);
+
+    const onCellEditingStopped = useCallback((event) => {
+      console.log('cellEditingStopped');
+      // setFormData(event.data);
+      setFormData({...formData, hra_llegada: '10.30' });
+      console.log(formData);
+      // console.log({ ...event.data, hra_llegada: event.value.toUpperCase() });
+      // handleFormSubmit();
+    }, []);
   
     return (
       <div style={containerStyle}>
@@ -145,6 +158,8 @@ import FormDialog from './DialogForm';
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 pagination={true}
+                onCellEditingStarted={onCellEditingStarted}
+                onCellEditingStopped={onCellEditingStopped}
               ></AgGridReact>
             </div>
             <FormDialog open={open} handleClose={handleClose}

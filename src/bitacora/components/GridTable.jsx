@@ -11,6 +11,7 @@ import FormDialog from './DialogForm';
     const [gridApi, setGridApi] = useState(null)
     const [tableData, setTableData] = useState(null)
     const [open, setOpen] = useState(false);
+    const [editGridCell, setEditGridCell] = useState(false);
     const [formData, setFormData] = useState(initialValue)
     const handleClickOpen = () => {
       setOpen(true);
@@ -21,6 +22,12 @@ import FormDialog from './DialogForm';
     useEffect(() => {
       getBitacora()
     }, [])
+
+    useEffect(() => {
+      console.log("useEffect")
+      editGridCell && handleTest();
+    }, [formData])
+
     //fetching user data from server
     const getBitacora = () => {
       fetch(url).then(resp => resp.json()).then(resp => setTableData(resp))
@@ -37,7 +44,7 @@ import FormDialog from './DialogForm';
     const onGridReady = (params) => {
       setGridApi(params)
     }
-    
+   
   // setting update row data to form data and opening pop up window
   const handleUpdate = (oldData) => {
     setFormData(oldData)
@@ -51,7 +58,25 @@ import FormDialog from './DialogForm';
 
     }
   }
+  const handleTest = () => {
+    console.log("formData ID:",formData.id);
+    if (formData.id) {
+      //updating a user 
+      const confirm = window.confirm("Are you sure, you want to update this row ?")
+      confirm && fetch(url + `/${formData.id}`, {
+        method: "PUT", body: JSON.stringify(formData), headers: {
+          'content-type': "application/json"
+        }
+      }).then(resp => resp.json())
+        .then(resp => {
+          getBitacora()
+
+        })
+    } 
+  }
+
   const handleFormSubmit = () => {
+    console.log("formData ID:",formData.id);
     if (formData.id) {
       //updating a user 
       const confirm = window.confirm("Are you sure, you want to update this row ?")
@@ -85,12 +110,12 @@ import FormDialog from './DialogForm';
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const [columnDefs, setColumnDefs] = useState([
       {
-        headerName: "Actions", field: "id", sortable: false, filter: false, minWidth: 170, cellRendererFramework: (params) => <div>
+        headerName: "Actions", field: "id", sortable: false, filter: false, minWidth: 170, cellRenderer: (params) => <div>
           <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><i className="fa-solid fa-pen-to-square"></i></Button>
           <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}><i className="fa-solid fa-trash-can"></i></Button>
         </div>
       },
-      { field: "id", headerName:"#", sort: 'desc' },
+      { field: "id", headerName:"#", sort: 'desc', editable:false },
       { field: "tractor"},
       { field: "operador" },
       { field: "caja" },
@@ -134,15 +159,26 @@ import FormDialog from './DialogForm';
       // console.log(event);
     }, []);
 
+    const onCellValueChanged= useCallback((event) => {
+      const {newValue, oldValue, data} = event;
+      console.log('onCellValueChanged');
+      console.log(event);
+      (newValue != oldValue) && setFormData({...data, [event.column.userProvidedColDef.field]: newValue.toUpperCase() });
+      (newValue != oldValue) && setEditGridCell(true);
+      console.log({...data, [event.column.userProvidedColDef.field]: newValue });
+    }, []);
+
     const onCellEditingStopped = useCallback((event) => {
       console.log('cellEditingStopped');
-      // setFormData(event.data);
-      setFormData({...formData, hra_llegada: '10.30' });
-      console.log(formData);
-      // console.log({ ...event.data, hra_llegada: event.value.toUpperCase() });
+      const {data, value, valueChanged} = event;
+      valueChanged && setFormData({...data, [event.column.userProvidedColDef.field]: value });
+      valueChanged && setEditGridCell(true);
+      //  handleEditCell(event.data);
       // handleFormSubmit();
     }, []);
   
+
+
     return (
       <div style={containerStyle}>
         <div className="example-wrapper">
@@ -158,8 +194,9 @@ import FormDialog from './DialogForm';
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 pagination={true}
-                onCellEditingStarted={onCellEditingStarted}
-                onCellEditingStopped={onCellEditingStopped}
+                // onCellEditingStarted={onCellEditingStarted}
+                onCellValueChanged={onCellValueChanged}
+                // onCellEditingStopped={onCellEditingStopped}
               ></AgGridReact>
             </div>
             <FormDialog open={open} handleClose={handleClose}

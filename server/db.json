@@ -563,7 +563,7 @@
       "tipo": "IMPO",
       "aduana": 240,
       "no_sello": "VACIA",
-      "hra_llegada": "20:28",
+      "hra_llegada": "10.36",
       "hra_salida": "20:47",
       "hra_rojo_mex": "",
       "hra_verde_mex": "21:02",
@@ -1897,16 +1897,30 @@
       "sistema": ""
     },
     {
-      "tractor": "PRUEBA TRACTORrrr",
-      "operador": "PRUEBA OPERADOR",
-      "caja": "PRUEBA",
+      "tractor": "TRACTOR",
+      "operador": "OPERADOR",
+      "caja": "CAJA",
       "cliente": "ANONIMO",
-      "origen": "AQUI",
-      "destino": "ALLA",
-      "tipo": "IMPORTE",
-      "aduana": "ELQUESEA",
-      "no_sello": "1234",
+      "origen": "ORIGEN",
+      "destino": "",
+      "tipo": "",
+      "aduana": "",
+      "no_sello": "",
+      "hra_llegada": "10.36",
       "id": 85
+    },
+    {
+      "tractor": "TRACTOR",
+      "operador": "operador",
+      "caja": "caja grande",
+      "cliente": "anonimo",
+      "origen": "origen",
+      "destino": "DESTINO",
+      "tipo": "",
+      "aduana": "",
+      "no_sello": "",
+      "hra_llegada": "10:40",
+      "id": 86
     }
   ]
 }

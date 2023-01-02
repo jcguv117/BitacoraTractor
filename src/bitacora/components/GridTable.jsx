@@ -52,7 +52,7 @@ import FormDialog from './DialogForm';
   }
   //deleting a user
   const handleDelete = (id) => {
-    const confirm = window.confirm("Are you sure, you want to delete this row", id)
+    const confirm = window.confirm("¿Está seguro/a de borrar el registro?", id)
     if (confirm) {
       fetch(url + `/${id}`, { method: "DELETE" }).then(resp => resp.json()).then(resp => getBitacora())
 
@@ -62,7 +62,7 @@ import FormDialog from './DialogForm';
     console.log("formData ID:",formData.id);
     if (formData.id) {
       //updating a user 
-      const confirm = window.confirm("Are you sure, you want to update this row ?")
+      const confirm = window.confirm("¿Está seguro/a de actualizar el registro?")
       confirm && fetch(url + `/${formData.id}`, {
         method: "PUT", body: JSON.stringify(formData), headers: {
           'content-type': "application/json"
@@ -79,7 +79,7 @@ import FormDialog from './DialogForm';
     console.log("formData ID:",formData.id);
     if (formData.id) {
       //updating a user 
-      const confirm = window.confirm("Are you sure, you want to update this row ?")
+      const confirm = window.confirm("¿Está seguro/a de actualizar el registro?")
       confirm && fetch(url + `/${formData.id}`, {
         method: "PUT", body: JSON.stringify(formData), headers: {
           'content-type': "application/json"

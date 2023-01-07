@@ -110,7 +110,8 @@ import FormDialog from './DialogForm';
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const [columnDefs, setColumnDefs] = useState([
       {
-        headerName: "Actions", field: "id", sortable: false, filter: false, minWidth: 170, cellRenderer: (params) => <div>
+        headerName: "Acciones", field: "id", sortable: false, editable:false, filter: false, minWidth: 170, 
+        cellRenderer: (params) => <div>
           <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><i className="fa-solid fa-pen-to-square"></i></Button>
           <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}><i className="fa-solid fa-trash-can"></i></Button>
         </div>

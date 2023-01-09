@@ -1916,7 +1916,7 @@
       "cliente": "anonimo",
       "origen": "origen",
       "destino": "DESTINO",
-      "tipo": "",
+      "tipo": "OTRO",
       "aduana": "",
       "no_sello": "",
       "hra_llegada": "10:40",

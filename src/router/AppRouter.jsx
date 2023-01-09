@@ -1,19 +1,33 @@
+import { useEffect } from 'react';
 import { Route, Routes, Navigate } from "react-router-dom"
 import {LoginPage} from '../auth'
 import {BitacoraPage} from "../bitacora";
-
-const authStatus = 'authenticated';
+import { useAuthStore } from '../hooks';
 
 export const AppRouter = () => {
+  const { status, checkAuthToken } = useAuthStore();
+  
+  useEffect(() => {
+      checkAuthToken();
+  }, [])
+
   return (
     <Routes>
       {
-        (authStatus === 'non-authenticated') 
-        ? <Route path="/auth/*" element={ <LoginPage/>} />
-        : <Route path="/*" element={ <BitacoraPage/>} />
+        ( status === 'not-authenticated') 
+        ? (
+          <>
+              <Route path="/auth/*" element={ <LoginPage /> } />
+              <Route path="/*" element={ <Navigate to="/auth/login" /> } />
+          </>
+        )
+        : (
+          <>
+              <Route path="/" element={ <BitacoraPage/>} />
+              <Route path="/*" element={ <Navigate to="/" /> } />
+          </>
+        )
       }
-        {/* fail safe */}
-        <Route path="/*" element={ <Navigate to="/auth/login" />} />
     </Routes>
   )
 }

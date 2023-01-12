@@ -1,4 +1,4 @@
-import {Navbar} from "../"
+import { Navbar } from "../../components/Navbar"
 import GridTable from "../components/GridTable"
 
 export const BitacoraPage = () => {

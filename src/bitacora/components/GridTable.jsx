@@ -4,6 +4,9 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { Grid, Button } from '@mui/material';
 import FormDialog from './DialogForm';
+import DateButton from './DateButton';
+import OptionCapturas from './OptionCapturas';
+import { appApi } from '../../api';
 
   const initialValue = { tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", hra_llegada: "" }
   const GridTable = () => {
@@ -13,6 +16,10 @@ import FormDialog from './DialogForm';
     const [open, setOpen] = useState(false);
     const [editGridCell, setEditGridCell] = useState(false);
     const [formData, setFormData] = useState(initialValue)
+    const [startDate, setStartDate] = useState(new Date());
+    const [dataCaptura, setDataCaptura] = useState(1);
+
+
     const handleClickOpen = () => {
       setOpen(true);
     };
@@ -37,10 +44,32 @@ import FormDialog from './DialogForm';
       setOpen(false);
       setFormData(initialValue)
     };
+
     const onChange = (e) => {
       const { value, id } = e.target
       setFormData({ ...formData, [id]: value.toUpperCase() })
     }
+
+    const onDateChange = (date) => {
+        setStartDate(date);
+        getMovimientos(dataCaptura, date);
+    }
+
+    const onOptionChange = (e) => {
+      const { value } = e.target
+      setDataCaptura(value);
+      getMovimientos(value, startDate);
+    }
+
+    const getMovimientos = async(idcaptura, date) => {
+        const fecha = date.toISOString().slice(0, 10);
+        const captura = idcaptura;
+        console.log(idcaptura, fecha);
+        const { data } = await appApi.get('/movimientos', {captura, fecha});
+        console.log(data);
+    }
+
+
     const onGridReady = (params) => {
       setGridApi(params)
     }
@@ -178,13 +207,13 @@ import FormDialog from './DialogForm';
       // handleFormSubmit();
     }, []);
   
-
-
     return (
       <div style={containerStyle}>
         <div className="example-wrapper">
           <div className="grid-wrapper">
           <Grid align="right">
+                <DateButton onDateChange={onDateChange} startDate={startDate}/>
+                <OptionCapturas onOptionChange={onOptionChange}/>
               <Button variant="contained" color="primary" onClick={onBtnExport}><i className="fa-solid fa-file-export"></i> Exportar a CSV</Button>
               <Button variant="contained" color="primary" onClick={handleClickOpen}><i className="fa-solid fa-plus"></i> Agregar</Button>
           </Grid>

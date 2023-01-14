@@ -1,18 +1,8 @@
 import { useState, useEffect } from 'react';
 import { appApi } from '../../api';
 
-export default function OptionCapturas({onOptionChange}) {
+export default function OptionCapturas({onOptionChange, dataCaptura}) {
 
-    const [dataCaptura, setDataCaptura] = useState([{idcaptura: "", nombre: " - "}]);
-
-    const getCapturas = async() => {
-        const { data } = await appApi.get('/capturas');
-        setDataCaptura(data.captura);
-    }
-
-    useEffect(() => {        
-        getCapturas()
-      }, [])
 
     return(
         <select className="form-select" aria-label="Default select example" onChange={(e) => onOptionChange(e)}>

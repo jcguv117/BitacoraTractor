@@ -8,43 +8,57 @@ import DateButton from './DateButton';
 import OptionCapturas from './OptionCapturas';
 import { appApi } from '../../api';
 
-  const initialValue = { tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", hra_llegada: "" }
+  const initialValue = {idcaptura: "", fecha: "", tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", hra_llegada: "" }
   const GridTable = () => {
     //FormDialog 
-    const [gridApi, setGridApi] = useState(null)
-    const [tableData, setTableData] = useState(null)
+    const [gridApi, setGridApi] = useState(null);
+    const [tableData, setTableData] = useState(null);
     const [open, setOpen] = useState(false);
     const [editGridCell, setEditGridCell] = useState(false);
-    const [formData, setFormData] = useState(initialValue)
+    const [formData, setFormData] = useState(initialValue);
+
     const [startDate, setStartDate] = useState(new Date());
     const [dataCaptura, setDataCaptura] = useState(1);
+    const [optCaptura, setOptCaptura] = useState([{idcaptura: "", nombre: " - "}]);
 
 
     const handleClickOpen = () => {
       setOpen(true);
     };
 
-    const url = `http://localhost:4000/bitacora`;
-    // calling getBitacora function for first time 
-    useEffect(() => {
-      getBitacora()
-    }, [])
-
-    useEffect(() => {
-      console.log("useEffect")
-      editGridCell && handleTest();
-    }, [formData])
-
-    //fetching user data from server
-    const getBitacora = () => {
-      fetch(url).then(resp => resp.json()).then(resp => setTableData(resp))
-    }
-
     const handleClose = () => {
       setOpen(false);
       setFormData(initialValue)
     };
 
+    useEffect(() => {
+        getCapturas();
+    }, [])
+
+    // calling function for first time 
+    useEffect(() => {
+      getMovimientos()
+    }, [dataCaptura, startDate])
+
+    useEffect(() => {
+      editGridCell && handleUpdateMov();
+    }, [formData])
+
+
+    //get data from server
+    const getMovimientos = async() => {
+        const fecha = startDate; //.toLocaleDateString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit'});
+        const captura = dataCaptura;
+        const { data } = await appApi.post('/movimientos', {captura, fecha});
+        setTableData(data);
+    }
+
+    const getCapturas = async() => {
+      const { data } = await appApi.get('/capturas');
+      setOptCaptura(data.captura);
+      setDataCaptura(data.captura[0].idcaptura);
+  }    
+    
     const onChange = (e) => {
       const { value, id } = e.target
       setFormData({ ...formData, [id]: value.toUpperCase() })
@@ -52,85 +66,68 @@ import { appApi } from '../../api';
 
     const onDateChange = (date) => {
         setStartDate(date);
-        getMovimientos(dataCaptura, date);
+        getMovimientos();
     }
 
     const onOptionChange = (e) => {
       const { value } = e.target
       setDataCaptura(value);
-      getMovimientos(value, startDate);
+      getMovimientos();
     }
-
-    const getMovimientos = async(idcaptura, date) => {
-        const fecha = date.toISOString().slice(0, 10);
-        const captura = idcaptura;
-        console.log(idcaptura, fecha);
-        const { data } = await appApi.get('/movimientos', {captura, fecha});
-        console.log(data);
-    }
-
 
     const onGridReady = (params) => {
       setGridApi(params)
     }
-   
+
   // setting update row data to form data and opening pop up window
   const handleUpdate = (oldData) => {
     setFormData(oldData)
     handleClickOpen()
   }
-  //deleting a user
-  const handleDelete = (id) => {
+
+  const handleDeleteMov = async(data) => {
+    const {idcaptura, fecha, id} = data;
     const confirm = window.confirm("¿Está seguro/a de borrar el registro?", id)
     if (confirm) {
-      fetch(url + `/${id}`, { method: "DELETE" }).then(resp => resp.json()).then(resp => getBitacora())
-
+      await appApi.delete('/movimientos', { params: { captura: idcaptura, fecha: fecha, id: id } })
+        .then(resp => getMovimientos());
     }
   }
-  const handleTest = () => {
-    console.log("formData ID:",formData.id);
-    if (formData.id) {
-      //updating a user 
-      const confirm = window.confirm("¿Está seguro/a de actualizar el registro?")
-      confirm && fetch(url + `/${formData.id}`, {
-        method: "PUT", body: JSON.stringify(formData), headers: {
-          'content-type': "application/json"
-        }
-      }).then(resp => resp.json())
-        .then(resp => {
-          getBitacora()
 
+  const handleFormSubmitMov = async() => {
+
+    console.log("submit", {...formData, idcaptura: dataCaptura, fecha: startDate});
+    if (formData.id) {
+      //updating movimiento
+      const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");
+      confirm && await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
+        .then(resp => {
+          handleClose()
+          getMovimientos()
         })
     } 
-  }
-
-  const handleFormSubmit = () => {
-    console.log("formData ID:",formData.id);
-    if (formData.id) {
-      //updating a user 
-      const confirm = window.confirm("¿Está seguro/a de actualizar el registro?")
-      confirm && fetch(url + `/${formData.id}`, {
-        method: "PUT", body: JSON.stringify(formData), headers: {
-          'content-type': "application/json"
-        }
-      }).then(resp => resp.json())
+    else {
+      // adding new movimiento
+      await appApi.post('/movimientos/new', {...formData, idcaptura: dataCaptura, fecha: startDate})
         .then(resp => {
           handleClose()
-          getBitacora()
-
-        })
-    } else {
-      // adding new user
-      fetch(url, {
-        method: "POST", body: JSON.stringify(formData), headers: {
-          'content-type': "application/json"
-        }
-      }).then(resp => resp.json())
-        .then(resp => {
-          handleClose()
-          getBitacora()
+          getMovimientos()
         })
     }
+
+  }
+
+  const handleUpdateMov = async() => {
+    console.log("formData ID:",formData.id);
+    if (formData.id) {
+      //updating 
+      const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");
+      confirm && await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
+        .then(resp => {
+          handleClose()
+          getMovimientos()
+        })
+    } 
   }
 
     //Example Ag-grid
@@ -142,7 +139,7 @@ import { appApi } from '../../api';
         headerName: "Acciones", field: "id", sortable: false, editable:false, filter: false, minWidth: 170, 
         cellRenderer: (params) => <div>
           <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><i className="fa-solid fa-pen-to-square"></i></Button>
-          <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}><i className="fa-solid fa-trash-can"></i></Button>
+          <Button variant="outlined" color="secondary" onClick={() => handleDeleteMov(params.data)}><i className="fa-solid fa-trash-can"></i></Button>
         </div>
       },
       { field: "id", headerName:"#", sort: 'desc', editable:false },
@@ -213,7 +210,7 @@ import { appApi } from '../../api';
           <div className="grid-wrapper">
           <Grid align="right">
                 <DateButton onDateChange={onDateChange} startDate={startDate}/>
-                <OptionCapturas onOptionChange={onOptionChange}/>
+                <OptionCapturas onOptionChange={onOptionChange} dataCaptura={optCaptura}/>
               <Button variant="contained" color="primary" onClick={onBtnExport}><i className="fa-solid fa-file-export"></i> Exportar a CSV</Button>
               <Button variant="contained" color="primary" onClick={handleClickOpen}><i className="fa-solid fa-plus"></i> Agregar</Button>
           </Grid>
@@ -230,7 +227,7 @@ import { appApi } from '../../api';
               ></AgGridReact>
             </div>
             <FormDialog open={open} handleClose={handleClose}
-              data={formData} onChange={onChange} handleFormSubmit={handleFormSubmit} />
+              data={formData} onChange={onChange} handleFormSubmit={handleFormSubmitMov} />
           </div>
         </div>
       </div>

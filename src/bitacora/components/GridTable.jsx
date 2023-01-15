@@ -180,6 +180,17 @@ import { appApi } from '../../api';
     const onBtnExport = useCallback(() => {
       gridRef.current.api.exportDataAsCsv();
     }, []);
+
+    const getRowStyle = params => {
+      const { data } = params; 
+      console.log(data.hra_entrega);
+      if (data.hra_entrega === null) 
+        return { background: 'yellow' }
+      else
+        return { background: 'green'}
+    };
+
+    const rowStyle = { background: 'yellow' };
     
     const onCellEditingStarted = useCallback((event) => {
       console.log('cellEditingStarted');
@@ -221,6 +232,8 @@ import { appApi } from '../../api';
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 pagination={true}
+                getRowStyle={getRowStyle}
+                // rowStyle={rowStyle}
                 // onCellEditingStarted={onCellEditingStarted}
                 onCellValueChanged={onCellValueChanged}
                 // onCellEditingStopped={onCellEditingStopped}

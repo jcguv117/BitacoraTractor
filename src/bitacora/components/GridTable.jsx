@@ -2,6 +2,8 @@ import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt, faPen, faPlus, faFileExport } from '@fortawesome/free-solid-svg-icons';
 import { Grid, Button, Tooltip } from '@mui/material';
 import FormDialog from './DialogForm';
 import DateButton from './DateButton';
@@ -138,8 +140,8 @@ import { appApi } from '../../api';
       {
         headerName: "Acciones", field: "id", sortable: false, editable:false, filter: false, minWidth: 170, 
         cellRenderer: (params) => <div>
-          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><i className="fa-solid fa-pen-to-square"></i></Button>
-          <Button variant="outlined" color="secondary" onClick={() => handleDeleteMov(params.data)}><i className="fa-solid fa-trash-can"></i></Button>
+          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><FontAwesomeIcon icon={faPen}/></Button>
+          <Button variant="outlined" color="secondary" onClick={() => handleDeleteMov(params.data)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
         </div>
       },
       { field: "id", headerName:"#", sort: 'desc', editable:false },
@@ -233,10 +235,10 @@ import { appApi } from '../../api';
               <OptionCapturas onOptionChange={onOptionChange} dataCaptura={optCaptura}/>
               <div className='d-flex gap-2'>
                 <Tooltip title="Expotar a csv">
-                  <Button variant="contained" color="primary" onClick={onBtnExport}><i className="fa-solid fa-file-export"></i></Button>
+                  <Button variant="contained" color="primary" onClick={onBtnExport}><FontAwesomeIcon icon={faFileExport}/></Button>
                 </Tooltip>
                 <Tooltip title="Agregar movimiento">
-                  <Button variant="contained" color="primary" onClick={handleClickOpen}><i className="fa-solid fa-plus"></i></Button>
+                  <Button variant="contained" color="primary" onClick={handleClickOpen}><FontAwesomeIcon icon={faPlus}/></Button>
                 </Tooltip>
               </div>
           </Grid>

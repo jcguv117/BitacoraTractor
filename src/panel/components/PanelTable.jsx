@@ -2,7 +2,9 @@ import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { Grid, Button } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt, faPen, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { Grid, Button, Tooltip } from '@mui/material';
 import { appApi } from '../../api';
 import FormDialog from './DialogForm';
 
@@ -92,8 +94,8 @@ import FormDialog from './DialogForm';
       {
         headerName: "Acciones", field: "id", sortable: false, filter: false, minWidth: 170, 
         cellRenderer: (params) => <div>
-          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><i className="fa-solid fa-pen-to-square"></i></Button>
-          <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}><i className="fa-solid fa-trash-can"></i></Button>
+          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><FontAwesomeIcon icon={faPen}/></Button>
+          <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
         </div>
       },
       { field: "id", headerName:"#", sort: 'desc'},
@@ -118,8 +120,10 @@ import FormDialog from './DialogForm';
       <div style={containerStyle}>
         <div className="example-wrapper">
           <div className="grid-wrapper">
-          <Grid align="right">
-              <Button variant="contained" color="primary" onClick={handleClickOpen}><i className="fa-solid fa-plus"></i> Agregar</Button>
+          <Grid align="right" className='d-flex justify-content-end gap-3 p-2'>
+            <Tooltip title="Agregar Usuario">
+              <Button variant="contained" color="primary" onClick={handleClickOpen}><FontAwesomeIcon icon={faUserPlus}/></Button>
+            </Tooltip>
           </Grid>
             <div style={gridStyle} className="ag-theme-alpine">
               <AgGridReact

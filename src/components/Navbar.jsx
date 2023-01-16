@@ -2,6 +2,9 @@
 import { Tooltip } from '@mui/material';
 import { useAuthStore } from '../hooks';
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserCircle, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+
 import logo from '../assets/logo-rex.png';
 
 
@@ -32,9 +35,14 @@ export const Navbar = () => {
             <div className="offcanvas-body">
                 <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <div className='d-flex'>
-                        <h2 className="dropdown-item"><i className="fa-regular fa-circle-user"></i> {toUpper(user.name)}</h2>
+                        <h2 className="dropdown-item">
+                            <FontAwesomeIcon icon={faUserCircle} /> &nbsp;
+                            {toUpper(user.name)}
+                        </h2>
                         <Tooltip title="Cerrar Sesión">
-                            <button className='btn btn-secondary' onClick={startLogout}><i className="fa-solid fa-right-from-bracket"></i></button>
+                            <button className='btn btn-secondary' onClick={startLogout}>
+                                <FontAwesomeIcon icon={faRightFromBracket} /> 
+                            </button>
                         </Tooltip>
                     </div>
 

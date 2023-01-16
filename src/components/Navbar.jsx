@@ -21,7 +21,7 @@ export const Navbar = () => {
     <nav className="navbar navbar-dark bg-dark fixed-top">
         <div className="container-fluid">
             <a className="navbar-brand" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
-                <img src={logo} alt="Bootstrap" width="70" height="56"  className='bg-white rounded rounded-3'/> &nbsp;
+                <img src={logo} width="70" height="56"  className='bg-white rounded rounded-3'/> &nbsp;
                 MONITOREO DE MOVIMIENTOS
             </a>
             <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">

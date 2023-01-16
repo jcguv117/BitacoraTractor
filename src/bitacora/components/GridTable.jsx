@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, Tooltip } from '@mui/material';
 import FormDialog from './DialogForm';
 import DateButton from './DateButton';
 import OptionCapturas from './OptionCapturas';
@@ -132,8 +132,8 @@ import { appApi } from '../../api';
 
     //Example Ag-grid
     const gridRef = useRef();
-    const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
-    const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
+
+
     const [columnDefs, setColumnDefs] = useState([
       {
         headerName: "Acciones", field: "id", sortable: false, editable:false, filter: false, minWidth: 170, 
@@ -174,8 +174,15 @@ import { appApi } from '../../api';
         resizable: true,
         sortable: true,
         filter: true,
+        filterParams: {
+          filterOptions: [],
+          suppressAndOrCondition: true,
+          filterPlaceholder: 'Filtrar...',
+        },
       };
     }, []);
+
+
 
     const onBtnExport = useCallback(() => {
       gridRef.current.api.exportDataAsCsv();
@@ -216,16 +223,22 @@ import { appApi } from '../../api';
     }, []);
   
     return (
-      <div style={containerStyle}>
+      <div style={{ height: '100%', width: '100%' }}>
         <div className="example-wrapper">
           <div className="grid-wrapper">
-          <Grid align="right">
-                <DateButton onDateChange={onDateChange} startDate={startDate}/>
-                <OptionCapturas onOptionChange={onOptionChange} dataCaptura={optCaptura}/>
-              <Button variant="contained" color="primary" onClick={onBtnExport}><i className="fa-solid fa-file-export"></i> Exportar a CSV</Button>
-              <Button variant="contained" color="primary" onClick={handleClickOpen}><i className="fa-solid fa-plus"></i> Agregar</Button>
+          <Grid align="right" className='d-flex justify-content-between flex-fill gap-3 p-2'>
+              <DateButton onDateChange={onDateChange} startDate={startDate}/>
+              <OptionCapturas onOptionChange={onOptionChange} dataCaptura={optCaptura}/>
+              <div className='d-flex gap-2'>
+                <Tooltip title="Expotar a csv">
+                  <Button variant="contained" color="primary" onClick={onBtnExport}><i className="fa-solid fa-file-export"></i></Button>
+                </Tooltip>
+                <Tooltip title="Agregar movimiento">
+                  <Button variant="contained" color="primary" onClick={handleClickOpen}><i className="fa-solid fa-plus"></i></Button>
+                </Tooltip>
+              </div>
           </Grid>
-            <div style={gridStyle} className="ag-theme-alpine">
+            <div style={{ height: '100%', width: '100%' }} className="ag-theme-alpine">
               <AgGridReact
                 ref={gridRef}
                 rowData={tableData}

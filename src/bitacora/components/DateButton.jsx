@@ -1,4 +1,5 @@
-import { forwardRef, useState } from "react";
+import { Button, Tooltip } from "@mui/material";
+import { forwardRef } from "react";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css"
@@ -6,24 +7,19 @@ import "react-datepicker/dist/react-datepicker.css"
 
 export default function DateButton({onDateChange, startDate}) {
     
-    const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-      <button className="example-custom-input" onClick={onClick} ref={ref}>
-        {value}
-      </button>
-
+    const CustomInput = forwardRef(({ value, onClick }, ref) => (
+      <Tooltip title="Cambiar fecha">
+        <Button variant="contained" color="primary" onClick={onClick}><i class="fa-solid fa-calendar-days"></i> &nbsp; {value}</Button>
+      </Tooltip>
     ));
 
-    const changeDateMovs = (date) => {
-        // console.log(date.toISOString().slice(0, 10));
-        setStartDate(date);
-        //reload grid
-    }
-
     return (
+    <div>
       <DatePicker
         selected={startDate}
         onChange={(date) => onDateChange(date)}
-        customInput={<ExampleCustomInput />}
+        customInput={<CustomInput />}
       />
+    </div>
     );
   }

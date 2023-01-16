@@ -1,21 +1,28 @@
 
+import { Tooltip } from '@mui/material';
 import { useAuthStore } from '../hooks';
 import { useNavigate } from "react-router-dom";
+import logo from '../assets/logo-rex.png';
 
-
-//const dateNow = new Date().toLocaleDateString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit'});
 
 export const Navbar = () => {
     
     const navigate = useNavigate();
     const { startLogout, user } = useAuthStore();
 
+    const toUpper = (str = "") => {
+        return str.toUpperCase() || "";
+    }
+
   return (
     <nav className="navbar navbar-dark bg-dark fixed-top">
         <div className="container-fluid">
-            <a className="navbar-brand" href="#">MONITOREO DE MOVIMIENTOS</a>
+            <a className="navbar-brand" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
+                <img src={logo} alt="Bootstrap" width="70" height="56"  className='bg-white rounded rounded-3'/> &nbsp;
+                MONITOREO DE MOVIMIENTOS
+            </a>
             <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
-            <span className="navbar-toggler-icon"></span>
+                <span className="navbar-toggler-icon"></span>
             </button>
             <div className="offcanvas offcanvas-end text-bg-dark" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
             <div className="offcanvas-header">
@@ -24,21 +31,23 @@ export const Navbar = () => {
             </div>
             <div className="offcanvas-body">
                 <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    <div>
-                        <h2 className="dropdown-item">{user.name}</h2>
-                        <button onClick={startLogout}>Cerrar Sesión</button>
+                    <div className='d-flex'>
+                        <h2 className="dropdown-item"><i className="fa-regular fa-circle-user"></i> {toUpper(user.name)}</h2>
+                        <Tooltip title="Cerrar Sesión">
+                            <button className='btn btn-secondary' onClick={startLogout}><i className="fa-solid fa-right-from-bracket"></i></button>
+                        </Tooltip>
                     </div>
 
                     <li className="nav-item">
-                        <a className="nav-link active" aria-current="page" onClick={() => navigate("/")}>Movimientos</a>
+                        <a className="nav-link" aria-current="page" onClick={() => navigate("/")} style={{cursor: "pointer"}}>Movimientos</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" onClick={() => navigate("/panel")}>Panel de Administrador</a>
+                        <a className="nav-link" onClick={() => navigate("/panel")} style={{cursor: "pointer"}}>Panel de Administrador</a>
                     </li>
                 </ul>
             </div>
             </div>
         </div>
-        </nav>
+    </nav>
   )
 }

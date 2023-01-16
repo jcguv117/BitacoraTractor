@@ -6,6 +6,7 @@ export default function PanelPage() {
     <div className='container mb-4 p-2'>
       <Navbar/>
       <br />
+      <br />
       <PanelTable/>
     </div>
   )

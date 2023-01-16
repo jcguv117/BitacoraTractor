@@ -178,6 +178,7 @@ import { appApi } from '../../api';
           filterOptions: [],
           suppressAndOrCondition: true,
           filterPlaceholder: 'Filtrar...',
+          readOnly: true
         },
       };
     }, []);
@@ -191,10 +192,11 @@ import { appApi } from '../../api';
     const getRowStyle = params => {
       const { data } = params; 
       console.log(data.hra_entrega);
-      if (data.hra_entrega === null) 
-        return { background: 'yellow' }
+      if (data.hra_llegada == null || data.hra_salida == null || data.hra_rojo_mex == null || data.hra_verde_mex == null || data.hra_rojo_ame == null || data.hra_entrega == null ||
+        data.ent_insp == null || data.sello_nuevo == null || data. sello_nuevo == '' || data.imporlot == null || data.placas == null ) 
+        return { background: '#f9d005' }
       else
-        return { background: 'green'}
+        return { background: '#32bd32eb'}
     };
 
     const rowStyle = { background: 'yellow' };

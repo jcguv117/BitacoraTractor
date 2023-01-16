@@ -7,6 +7,7 @@ export const BitacoraPage = () => {
     <div className='container mb-4 p-2'>
         <Navbar/>
         <br />
+        <br />
         <GridTable/>
     </div>
   )

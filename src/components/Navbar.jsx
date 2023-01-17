@@ -22,7 +22,7 @@ export const Navbar = () => {
         <div className="container-fluid">
             <a className="navbar-brand" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
                 <img src={logo} width="70" height="56"  className='bg-white rounded rounded-3'/> &nbsp;
-                MONITOREO DE MOVIMIENTOS
+                BITACORA DE MONITOREO DE UNIDADES
             </a>
             <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
                 <span className="navbar-toggler-icon"></span>

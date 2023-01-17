@@ -9,8 +9,18 @@ import FormDialog from './DialogForm';
 import DateButton from './DateButton';
 import OptionCapturas from './OptionCapturas';
 import { appApi } from '../../api';
+import TimeEditor from './TimeEditor';
+
+  const cellEditorSelector = (params) => {
+    return {
+      component: TimeEditor,
+      popup: true,
+      popupPosition: 'under',
+    };
+  };
 
   const initialValue = {idcaptura: "", fecha: "", tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", hra_llegada: "" }
+  
   const GridTable = () => {
     //FormDialog 
     const [gridApi, setGridApi] = useState(null);
@@ -154,7 +164,7 @@ import { appApi } from '../../api';
       { field: "tipo" },
       { field: "aduana" },
       { field: "no_sello" },
-      { field: "hra_llegada" },
+      { field: "hra_llegada", cellEditorSelector: cellEditorSelector },
       { field: "hra_salida" },
       { field: "hra_rojo_mex" },
       { field: "hra_verde_mex" },
@@ -171,17 +181,18 @@ import { appApi } from '../../api';
     const defaultColDef = useMemo(() => {
       return {
         flex: 1,
-        minWidth: 110,
+        minWidth: 210,
         editable: true,
         resizable: true,
         sortable: true,
         filter: true,
-        filterParams: {
-          filterOptions: [],
-          suppressAndOrCondition: true,
-          filterPlaceholder: 'Filtrar...',
-          readOnly: true
+        suppressMenu: true,
+        floatingFilter: true,
+        floatingFilterComponentParams: {
+          suppressFilterButton: true,
+          color: 'blue',
         },
+
       };
     }, []);
 
@@ -228,7 +239,7 @@ import { appApi } from '../../api';
   
     return (
       <div style={{ height: '100%', width: '100%' }}>
-        <div className="example-wrapper">
+        <div className="example-wrapper table">
           <div className="grid-wrapper">
           <Grid align="right" className='d-flex justify-content-between flex-fill gap-3 p-2'>
               <DateButton onDateChange={onDateChange} startDate={startDate}/>

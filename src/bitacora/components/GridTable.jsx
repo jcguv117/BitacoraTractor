@@ -148,7 +148,7 @@ import TimeEditor from './TimeEditor';
 
     const [columnDefs, setColumnDefs] = useState([
       {
-        headerName: "Acciones", field: "id", sortable: false, editable:false, filter: false, minWidth: 170, 
+        headerName: "Acciones", sortable: false, editable:false, filter: false, minWidth: 170, 
         cellRenderer: (params) => <div>
           <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><FontAwesomeIcon icon={faPen}/></Button>
           <Button variant="outlined" color="secondary" onClick={() => handleDeleteMov(params.data)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
@@ -163,16 +163,16 @@ import TimeEditor from './TimeEditor';
       { field: "destino" },
       { field: "tipo" },
       { field: "aduana" },
-      { field: "no_sello" },
-      { field: "hra_llegada", cellEditorSelector: cellEditorSelector },
-      { field: "hra_salida" },
-      { field: "hra_rojo_mex" },
-      { field: "hra_verde_mex" },
-      { field: "hra_rojo_ame" },
+      { field: "no_sello",  headerName:"# Sello" },
+      { field: "hra_llegada"  , headerName:"Hora Llegada"   , cellEditorSelector: cellEditorSelector },
+      { field: "hra_salida"   , headerName:"Hora Salida"    , cellEditorSelector: cellEditorSelector },
+      { field: "hra_rojo_mex" , headerName:"Hora Rojo Mex"  , cellEditorSelector: cellEditorSelector },
+      { field: "hra_verde_mex", headerName:"Hora Verde Mex" , cellEditorSelector: cellEditorSelector },
+      { field: "hra_rojo_ame" , headerName:"Hora Rojo Ame"  , cellEditorSelector: cellEditorSelector },
       { field: "ent_insp" },
-      { field: "sello_nuevo" },
+      { field: "sello_nuevo", headerName:"Sello Nuevo" },
       { field: "imporlot" },
-      { field: "hra_entrega" },
+      { field: "hra_entrega"  , headerName:"Hora Entrega"   , cellEditorSelector: cellEditorSelector },
       { field: "placas"},
       { field: "observacion", minWidth: 250 },
       { field: "sistema" }
@@ -190,16 +190,20 @@ import TimeEditor from './TimeEditor';
         floatingFilter: true,
         floatingFilterComponentParams: {
           suppressFilterButton: true,
-          color: 'blue',
         },
 
       };
     }, []);
 
 
-
     const onBtnExport = useCallback(() => {
-      gridRef.current.api.exportDataAsCsv();
+      gridRef.current.api.exportDataAsCsv(
+        {
+          fileName: "exportacion_"+startDate.toLocaleDateString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit'}),
+          columnKeys: ['id', 'tractor', 'operador', 'caja', 'cliente', 'origen', 'destino', 'tipo', 'aduana', 'no_sello', 'hra_llegada', 
+                        'hra_salida', 'hra_rojo_mex', 'hra_verde_mex', 'hra_rojo_ame', 'ent_insp', 'sello_nuevo', 'imporlot', 'hra_entrega', 'placas', 'observacion', 'sistema']
+        }
+      );
     }, []);
 
     const getRowStyle = params => {

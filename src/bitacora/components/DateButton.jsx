@@ -11,7 +11,7 @@ export default function DateButton({onDateChange, startDate}) {
     
     const CustomInput = forwardRef(({ value, onClick }, ref) => (
       <Tooltip title="Cambiar fecha">
-        <Button variant="contained" color="primary" onClick={onClick}>
+        <Button variant="contained" color="primary" onClick={onClick} className="d-block">
           <FontAwesomeIcon icon={faCalendarAlt} /> &nbsp; {value}</Button>
       </Tooltip>
     ));

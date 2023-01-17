@@ -4,7 +4,7 @@ import GridTable from "../components/GridTable"
 export const BitacoraPage = () => {
     
   return (
-    <div className='container mb-4 p-2'>
+    <div className='container-fluid mb-4 p-2'>
         <Navbar/>
         <br />
         <br />

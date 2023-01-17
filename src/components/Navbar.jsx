@@ -20,9 +20,9 @@ export const Navbar = () => {
   return (
     <nav className="navbar navbar-dark bg-dark fixed-top">
         <div className="container-fluid">
-            <a className="navbar-brand" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
+            <a className="navbar-brand hideOverFlow w-75" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
                 <img src={logo} width="70" height="56"  className='bg-white rounded rounded-3'/> &nbsp;
-                BITACORA DE MONITOREO DE UNIDADES
+                 BITACORA DE MONITOREO DE UNIDADES
             </a>
             <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
                 <span className="navbar-toggler-icon"></span>

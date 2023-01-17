@@ -23,7 +23,6 @@ const TimeEditor = memo(
         return {
           // the final value to send to the grid, on completion of editing
           getValue() {
-            console.log(props);
             return value;
           },
   

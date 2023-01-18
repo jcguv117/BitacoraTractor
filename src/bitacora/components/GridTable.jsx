@@ -11,6 +11,7 @@ import OptionCapturas from './OptionCapturas';
 import { appApi } from '../../api';
 import TimeEditor from './TimeEditor';
 import Swal from 'sweetalert2';
+import { useAuthStore } from '../../hooks';
 
   const cellEditorSelector = (params) => {
     return {
@@ -20,12 +21,32 @@ import Swal from 'sweetalert2';
     };
   };
 
+  const validarPermiso = (permiso, accion="") => {
+    switch(accion){
+      case 'add':
+          if(permiso == 9 || permiso == 1 || permiso == 2 || permiso == 3) return true;
+          else Swal.fire('Permiso Denegado', 'No tiene permiso para agregar', 'error');
+        break;
+      case 'update':
+          if(permiso == 9 || permiso == 2 || permiso == 3) return true;
+          else Swal.fire('Permiso Denegado', 'No tiene permiso para actualizar', 'error');
+        break;
+      case 'remove':
+          if(permiso == 9 || permiso == 3) return true;
+          else Swal.fire('Permiso Denegado', 'No tiene permiso para eliminar', 'error');
+        break;
+    }
+    return false;
+  }
+
+  
   const initialValue = {
     tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", 
     hra_llegada: "", hra_salida: "", hra_rojo_mex: "", hra_verde_mex: "", hra_rojo_ame: "", ent_insp: "", sello_nuevo: "",
     imporlot: "", hra_entrega: "", placas: "" }
-  
-  const GridTable = () => {
+    
+    const GridTable = () => {
+    const { user } = useAuthStore();
     const [gridApi, setGridApi] = useState(null);
     const [tableData, setTableData] = useState(null);
     const [open, setOpen] = useState(false);
@@ -64,7 +85,7 @@ import Swal from 'sweetalert2';
     const getMovimientos = async(date = "", idcaptura = 0) => {
       const fecha   = (date) ? date : startDate;
       const captura = (idcaptura) ? idcaptura : dataCaptura;
-      console.log("getMovimientos ", fecha, captura);
+      // console.log("getMovimientos ", fecha, captura);
         const { data } = await appApi.post('/movimientos', {captura, fecha});
         setTableData(data);
     }
@@ -101,6 +122,7 @@ import Swal from 'sweetalert2';
 
   const handleDeleteMov = async(data) => {
     const {idcaptura, fecha, id} = data;
+    if(!validarPermiso(user.permiso, "remove")) return;
     const confirm = window.confirm("¿Está seguro/a de borrar el registro?", id)
     if (confirm) {
       await appApi.delete('/movimientos', { params: { captura: idcaptura, fecha: fecha, id: id } })
@@ -109,9 +131,9 @@ import Swal from 'sweetalert2';
   }
 
   const handleFormSubmitMov = async() => {
-    console.log("submit", {...formData, idcaptura: dataCaptura, fecha: startDate});
     if (formData.id) {
       //updating movimiento
+      if(!validarPermiso(user.permiso, "update")) return;
       const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");
       confirm && await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
         .then(resp => {
@@ -121,6 +143,7 @@ import Swal from 'sweetalert2';
     } 
     else {
       // adding new movimiento
+      if(!validarPermiso(user.permiso, "add")) return;
       await appApi.post('/movimientos/new', {...formData, idcaptura: dataCaptura, fecha: startDate})
         .then(resp => {
           handleClose()
@@ -133,6 +156,7 @@ import Swal from 'sweetalert2';
   const handleUpdateMov = async() => {
     if (formData.id) {
       //updating 
+      if(!validarPermiso(user.permiso, "update")) return;
       const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");
       if(confirm) 
         await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})

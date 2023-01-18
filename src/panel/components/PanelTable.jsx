@@ -8,7 +8,7 @@ import { Grid, Button, Tooltip } from '@mui/material';
 import { appApi } from '../../api';
 import FormDialog from './DialogForm';
 
-  const initialValue = { tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", hra_llegada: "" }
+  const initialValue = { user: "" , name: "", password: "", permiso: "" }
   const PanelTable = () => {
     //FormDialog 
     const [gridApi, setGridApi] = useState(null)
@@ -17,6 +17,10 @@ import FormDialog from './DialogForm';
     const [formData, setFormData] = useState(initialValue)
     const handleClickOpen = () => {
       setOpen(true);
+    };
+
+    const handleChange = (event) => {
+      setFormData({...formData, permiso: event.target.value});
     };
 
     const url = `http://localhost:8000/api/usuarios`;
@@ -92,7 +96,7 @@ import FormDialog from './DialogForm';
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const [columnDefs, setColumnDefs] = useState([
       {
-        headerName: "Acciones", field: "id", sortable: false, filter: false, minWidth: 170, 
+        headerName: "Acciones", sortable: false, filter: false, minWidth: 170, 
         cellRenderer: (params) => <div>
           <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><FontAwesomeIcon icon={faPen}/></Button>
           <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
@@ -102,7 +106,7 @@ import FormDialog from './DialogForm';
       { headerName:"Usuario", field: "user"},
       { headerName:"Nombre", field: "name" },
       { headerName:"Contraseña", field: "password" },
-      { headerName: "Estado", field: "my_status" },
+      { headerName: "Permiso", field: "permiso" },
     ]);
 
     const defaultColDef = useMemo(() => {
@@ -111,7 +115,6 @@ import FormDialog from './DialogForm';
         minWidth: 110,
         resizable: true,
         sortable: true,
-        filter: true,
       };
     }, []);
 
@@ -135,7 +138,7 @@ import FormDialog from './DialogForm';
               ></AgGridReact>
             </div>
             <FormDialog open={open} handleClose={handleClose}
-              data={formData} onChange={onChange} handleFormSubmit={handleFormSubmit} />
+              data={formData} onChange={onChange} handleFormSubmit={handleFormSubmit} handleChange={handleChange} />
           </div>
         </div>
       </div>

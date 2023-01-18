@@ -26,12 +26,12 @@ import Swal from 'sweetalert2';
  const formSubmit = () => {
   const datos = {tractor,operador,caja,cliente,origen,destino,tipo,aduana,no_sello}
   const isEmpty = (key) => data[key] === null || data[key] === '' || data[key] == undefined;
-  // if(Object.keys(datos).some(isEmpty))
-  //   Swal.fire({
-  //     title: 'Se deben llenar todos los datos.',
-  //     icon: 'info',
-  //   });
-  // else
+  if(Object.keys(datos).some(isEmpty))
+    Swal.fire({
+      title: 'Se deben llenar todos los datos.',
+      icon: 'info',
+    });
+  else
     handleFormSubmit();
  }
 

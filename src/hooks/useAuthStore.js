@@ -14,7 +14,7 @@ export const useAuthStore = () => {
             const { data } = await appApi.post('/usuarios',{ user, password });
             localStorage.setItem('token', data.token );
             localStorage.setItem('token-init-date', new Date().getTime() );
-            dispatch( onLogin({ name: data.name, uid: data.uid }) );
+            dispatch( onLogin({ name: data.name, uid: data.uid, permiso: data.permiso }) );
             
         } catch (error) {
             dispatch( onLogout('Credenciales incorrectas') );
@@ -49,7 +49,7 @@ export const useAuthStore = () => {
             const { data } = await appApi.get('usuarios/renew');
             localStorage.setItem('token', data.token );
             localStorage.setItem('token-init-date', new Date().getTime() );
-            dispatch( onLogin({ name: data.name, uid: data.uid }) );
+            dispatch( onLogin({ name: data.name, uid: data.uid, permiso: data.permiso }) );
         } catch (error) {
             localStorage.clear();
             dispatch( onLogout() );

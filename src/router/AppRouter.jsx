@@ -6,8 +6,7 @@ import PanelPage from '../panel/pages/PanelPage';
 import { useAuthStore } from '../hooks';
 
 export const AppRouter = () => {
-  const { status, checkAuthToken } = useAuthStore();
-  
+  const { status, checkAuthToken, user } = useAuthStore();
   useEffect(() => {
       checkAuthToken();
   }, [])
@@ -25,10 +24,18 @@ export const AppRouter = () => {
         : (
           <>
               <Route path="/" element={ <BitacoraPage/>} />
-              <Route path="/panel" element={ <PanelPage/>} />
               <Route path="/*" element={ <Navigate to="/" /> } />
           </>
         )
+
+        
+      }
+      {
+        (status === 'authenticated' && user.permiso == 9) && 
+        <>
+              <Route path="/panel" element={ <PanelPage/>} />
+              <Route path="/*" element={ <Navigate to="/" /> } />
+        </>
       }
     </Routes>
   )

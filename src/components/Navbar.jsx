@@ -17,6 +17,15 @@ export const Navbar = () => {
         return str.toUpperCase() || "";
     }
 
+    const showPanel = () => {
+        if(user.permiso == 9)
+        return(
+            <li className="nav-item">
+                <a className="nav-link" onClick={() => navigate("/panel")} style={{cursor: "pointer"}}>Panel de Administrador</a>
+            </li>
+        );
+    }
+
   return (
     <nav className="navbar navbar-dark bg-dark fixed-top">
         <div className="container-fluid">
@@ -49,9 +58,9 @@ export const Navbar = () => {
                     <li className="nav-item">
                         <a className="nav-link" aria-current="page" onClick={() => navigate("/")} style={{cursor: "pointer"}}>Movimientos</a>
                     </li>
-                    <li className="nav-item">
-                        <a className="nav-link" onClick={() => navigate("/panel")} style={{cursor: "pointer"}}>Panel de Administrador</a>
-                    </li>
+                    {
+                        showPanel()
+                    }
                 </ul>
             </div>
             </div>

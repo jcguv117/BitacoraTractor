@@ -17,6 +17,13 @@ export const Navbar = () => {
         return str.toUpperCase() || "";
     }
 
+    const customPermisoStr = (value) => {
+        if(value == 1 ) return 'Capturista';
+        if(value == 2 ) return 'Mediador';
+        if(value == 3 ) return 'Solucionador';
+        if(value == 9 ) return 'Administrador';
+    }
+
     const showPanel = () => {
         if(user.permiso == 9)
         return(
@@ -25,7 +32,7 @@ export const Navbar = () => {
             </li>
         );
     }
-
+    
   return (
     <nav className="navbar navbar-dark bg-dark fixed-top">
         <div className="container-fluid">
@@ -38,16 +45,20 @@ export const Navbar = () => {
             </button>
             <div className="offcanvas offcanvas-end text-bg-dark" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
             <div className="offcanvas-header">
-                <h5 className="offcanvas-title" id="offcanvasDarkNavbarLabel"></h5>
+                <h4 className="offcanvas-title" id="offcanvasDarkNavbarLabel">
+                    <FontAwesomeIcon icon={faUserCircle} /> &nbsp;
+                    {toUpper(user.name)}
+                </h4>
                 <button type="button" className="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div className="offcanvas-body">
                 <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    <div className='d-flex'>
-                        <h2 className="dropdown-item">
-                            <FontAwesomeIcon icon={faUserCircle} /> &nbsp;
-                            {toUpper(user.name)}
-                        </h2>
+                    <div className='d-flex m-2'>
+                        <h5 className="dropdown-item">
+                            <span className=''>
+                                {customPermisoStr(user.permiso)}
+                            </span>
+                        </h5>
                         <Tooltip title="Cerrar Sesión">
                             <button className='btn btn-secondary' onClick={startLogout}>
                                 <FontAwesomeIcon icon={faRightFromBracket} /> 

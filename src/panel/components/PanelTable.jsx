@@ -8,10 +8,17 @@ import { Grid, Button, Tooltip } from '@mui/material';
 import { appApi } from '../../api';
 import FormDialog from './DialogForm';
 
+  const customCellPermiso = (params) => {
+      const {value} = params;
+      if(value == 1 ) return 'Capturista';
+      if(value == 2 ) return 'Mediador';
+      if(value == 3 ) return 'Solucionador';
+      if(value == 9 ) return 'Administrador';
+      return "";
+   }
   const initialValue = { user: "" , name: "", password: "", permiso: "" }
   const PanelTable = () => {
     //FormDialog 
-    const [gridApi, setGridApi] = useState(null)
     const [tableData, setTableData] = useState(null)
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState(initialValue)
@@ -28,7 +35,7 @@ import FormDialog from './DialogForm';
     // calling getUsuarios function for first time 
     useEffect(() => {
       getUsuarios()
-    }, [])
+    }, [formData])
 
     //fetching user data from server
     const getUsuarios = async() => {
@@ -40,12 +47,10 @@ import FormDialog from './DialogForm';
       setOpen(false);
       setFormData(initialValue)
     };
+
     const onChange = (e) => {
       const { value, id } = e.target
       setFormData({ ...formData, [id]: value.toUpperCase() })
-    }
-    const onGridReady = (params) => {
-      setGridApi(params)
     }
    
   // setting update row data to form data and opening pop up window
@@ -53,12 +58,14 @@ import FormDialog from './DialogForm';
     setFormData(oldData)
     handleClickOpen()
   }
+
   //deleting a user
-  const handleDelete = (id) => {
+  const handleDelete = async(data) => {
+    const {id} = data;
     const confirm = window.confirm("¿Está seguro/a de borrar el registro?", id)
     if (confirm) {
-      fetch(url + `/${id}`, { method: "DELETE" }).then(resp => resp.json()).then(resp => getUsuarios())
-
+      await appApi.delete('/usuarios'+ `/${id}`)
+        .then(resp => getUsuarios());
     }
   }
 
@@ -99,14 +106,15 @@ import FormDialog from './DialogForm';
         headerName: "Acciones", sortable: false, filter: false, minWidth: 170, 
         cellRenderer: (params) => <div>
           <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><FontAwesomeIcon icon={faPen}/></Button>
-          <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
+          <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.data)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
         </div>
       },
-      { field: "id", headerName:"#", sort: 'desc'},
+      { field: "id", headerName:"#", sort: 'desc' , maxWidth: 70},
       { headerName:"Usuario", field: "user"},
       { headerName:"Nombre", field: "name" },
-      { headerName:"Contraseña", field: "password" },
-      { headerName: "Permiso", field: "permiso" },
+      { headerName:"Contraseña", field: "password", hide: true },
+      { headerName: "Permiso", field: "permiso" , maxWidth: 150,
+        cellRenderer: customCellPermiso}
     ]);
 
     const defaultColDef = useMemo(() => {

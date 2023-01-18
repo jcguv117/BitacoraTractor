@@ -21,21 +21,21 @@ export const AppRouter = () => {
               <Route path="/*" element={ <Navigate to="/auth/login" /> } />
           </>
         )
-        : (
+        : (user.permiso == 9) 
+          ? (
           <>
               <Route path="/" element={ <BitacoraPage/>} />
-              <Route path="/*" element={ <Navigate to="/" /> } />
-          </>
-        )
-
-        
-      }
-      {
-        (status === 'authenticated' && user.permiso == 9) && 
-        <>
               <Route path="/panel" element={ <PanelPage/>} />
               <Route path="/*" element={ <Navigate to="/" /> } />
-        </>
+          </>
+          )
+          :(
+            <>
+                <Route path="/" element={ <BitacoraPage/>} />
+                <Route path="/*" element={ <Navigate to="/" /> } />
+            </>
+          )
+ 
       }
     </Routes>
   )

@@ -10,6 +10,7 @@ import DateButton from './DateButton';
 import OptionCapturas from './OptionCapturas';
 import { appApi } from '../../api';
 import TimeEditor from './TimeEditor';
+import Swal from 'sweetalert2';
 
   const cellEditorSelector = (params) => {
     return {
@@ -19,15 +20,17 @@ import TimeEditor from './TimeEditor';
     };
   };
 
-  const initialValue = {idcaptura: "", fecha: "", tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", hra_llegada: "" }
+  const initialValue = {
+    tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", 
+    hra_llegada: "", hra_salida: "", hra_rojo_mex: "", hra_verde_mex: "", hra_rojo_ame: "", ent_insp: "", sello_nuevo: "",
+    imporlot: "", hra_entrega: "", placas: "" }
   
   const GridTable = () => {
-    //FormDialog 
     const [gridApi, setGridApi] = useState(null);
     const [tableData, setTableData] = useState(null);
     const [open, setOpen] = useState(false);
     const [editGridCell, setEditGridCell] = useState(false);
-    const [formData, setFormData] = useState(initialValue);
+    const [formData, setFormData] = useState({...initialValue, idcaptura: "", fecha: ""});
 
     const [startDate, setStartDate] = useState(new Date());
     const [dataCaptura, setDataCaptura] = useState(1);
@@ -58,9 +61,10 @@ import TimeEditor from './TimeEditor';
 
 
     //get data from server
-    const getMovimientos = async() => {
-        const fecha = startDate; //.toLocaleDateString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit'});
-        const captura = dataCaptura;
+    const getMovimientos = async(date = "", idcaptura = 0) => {
+      const fecha   = (date) ? date : startDate;
+      const captura = (idcaptura) ? idcaptura : dataCaptura;
+      console.log("getMovimientos ", fecha, captura);
         const { data } = await appApi.post('/movimientos', {captura, fecha});
         setTableData(data);
     }
@@ -77,14 +81,14 @@ import TimeEditor from './TimeEditor';
     }
 
     const onDateChange = (date) => {
-        setStartDate(date);
-        getMovimientos();
+      setStartDate(date);
+      // getMovimientos();
     }
 
     const onOptionChange = (e) => {
       const { value } = e.target
       setDataCaptura(value);
-      getMovimientos();
+      // getMovimientos();
     }
 
     const onGridReady = (params) => {
@@ -102,12 +106,11 @@ import TimeEditor from './TimeEditor';
     const confirm = window.confirm("¿Está seguro/a de borrar el registro?", id)
     if (confirm) {
       await appApi.delete('/movimientos', { params: { captura: idcaptura, fecha: fecha, id: id } })
-        .then(resp => getMovimientos());
+        .then(resp => getMovimientos(fecha, idcaptura));
     }
   }
 
   const handleFormSubmitMov = async() => {
-
     console.log("submit", {...formData, idcaptura: dataCaptura, fecha: startDate});
     if (formData.id) {
       //updating movimiento
@@ -130,15 +133,17 @@ import TimeEditor from './TimeEditor';
   }
 
   const handleUpdateMov = async() => {
-    console.log("formData ID:",formData.id);
+    // console.log("update",formData);
     if (formData.id) {
       //updating 
       const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");
-      confirm && await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
+      if(confirm) 
+        await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
         .then(resp => {
           handleClose()
           getMovimientos()
         })
+      else setEditGridCell(false);
     } 
   }
 
@@ -155,15 +160,15 @@ import TimeEditor from './TimeEditor';
         </div>
       },
       { field: "id", headerName:"#", sort: 'desc', editable:false },
-      { field: "tractor"},
-      { field: "operador" },
-      { field: "caja" },
-      { field: "cliente" },
-      { field: "origen" },
-      { field: "destino" },
-      { field: "tipo" },
-      { field: "aduana" },
-      { field: "no_sello",  headerName:"# Sello" },
+      { field: "tractor", editable:false },
+      { field: "operador", editable:false  },
+      { field: "caja", editable:false  },
+      { field: "cliente", editable:false  },
+      { field: "origen", editable:false  },
+      { field: "destino", editable:false  },
+      { field: "tipo", editable:false  },
+      { field: "aduana", editable:false  },
+      { field: "no_sello",  headerName:"# Sello", editable:false  },
       { field: "hra_llegada"  , headerName:"Hora Llegada"   , cellEditorSelector: cellEditorSelector },
       { field: "hra_salida"   , headerName:"Hora Salida"    , cellEditorSelector: cellEditorSelector },
       { field: "hra_rojo_mex" , headerName:"Hora Rojo Mex"  , cellEditorSelector: cellEditorSelector },
@@ -207,16 +212,14 @@ import TimeEditor from './TimeEditor';
     }, []);
 
     const getRowStyle = params => {
-      const { data } = params; 
-      console.log(data.hra_entrega);
-      if (data.hra_llegada == null || data.hra_salida == null || data.hra_rojo_mex == null || data.hra_verde_mex == null || data.hra_rojo_ame == null || data.hra_entrega == null ||
-        data.ent_insp == null || data.sello_nuevo == null || data. sello_nuevo == '' || data.imporlot == null || data.placas == null ) 
-        return { background: '#f9d005' }
-      else
-        return { background: '#32bd32eb'}
-    };
+      const { data } = params;
+      const isEmpty = (key) => data[key] === null || data[key] === '' || data[key] == undefined;
 
-    const rowStyle = { background: 'yellow' };
+      if(Object.keys(initialValue).some(isEmpty))
+        return { background: '#ffc107' }//warning-color
+      else
+        return { background: '#198754de'} //success-color
+    };
     
     const onCellEditingStarted = useCallback((event) => {
       console.log('cellEditingStarted');
@@ -265,7 +268,6 @@ import TimeEditor from './TimeEditor';
                 defaultColDef={defaultColDef}
                 pagination={true}
                 getRowStyle={getRowStyle}
-                // rowStyle={rowStyle}
                 // onCellEditingStarted={onCellEditingStarted}
                 onCellValueChanged={onCellValueChanged}
                 // onCellEditingStopped={onCellEditingStopped}

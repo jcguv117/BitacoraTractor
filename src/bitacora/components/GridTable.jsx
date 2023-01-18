@@ -73,8 +73,15 @@ import { useAuthStore } from '../../hooks';
 
     // calling function for first time 
     useEffect(() => {
-      getMovimientos()
+        getMovimientos()
     }, [dataCaptura, startDate])
+
+    useEffect(() => {
+      setInterval(() => {
+        console.log("redraw")
+        gridRef.current.api.redrawRows();
+      }, 600000);
+    }, [])
 
     useEffect(() => {
       editGridCell && handleUpdateMov();
@@ -85,7 +92,7 @@ import { useAuthStore } from '../../hooks';
     const getMovimientos = async(date = "", idcaptura = 0) => {
       const fecha   = (date) ? date : startDate;
       const captura = (idcaptura) ? idcaptura : dataCaptura;
-      // console.log("getMovimientos ", fecha, captura);
+      console.log("getMovimientos ", fecha, captura);
         const { data } = await appApi.post('/movimientos', {captura, fecha});
         setTableData(data);
     }
@@ -122,7 +129,7 @@ import { useAuthStore } from '../../hooks';
 
   const handleDeleteMov = async(data) => {
     const {idcaptura, fecha, id} = data;
-    if(!validarPermiso(user.permiso, "remove")) return;
+    // if(!validarPermiso(user.permiso, "remove")) return;
     const confirm = window.confirm("¿Está seguro/a de borrar el registro?", id)
     if (confirm) {
       await appApi.delete('/movimientos', { params: { captura: idcaptura, fecha: fecha, id: id } })
@@ -131,9 +138,10 @@ import { useAuthStore } from '../../hooks';
   }
 
   const handleFormSubmitMov = async() => {
+    const {tractor, operador, caja, cliente, origen, destino, tipo, aduana, no_sello } = formData;
     if (formData.id) {
       //updating movimiento
-      if(!validarPermiso(user.permiso, "update")) return;
+      // if(!validarPermiso(user.permiso, "update")) return;
       const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");
       confirm && await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
         .then(resp => {
@@ -143,7 +151,12 @@ import { useAuthStore } from '../../hooks';
     } 
     else {
       // adding new movimiento
-      if(!validarPermiso(user.permiso, "add")) return;
+      // if(!validarPermiso(user.permiso, "add")) return;
+      // if(formData.tipo != "EXPO" || formData.tipo != "IMPO")
+      //       setFormData({...formData, hra_llegada: formData.tipo, hra_salida: formData.tipo, hra_rojo_mex: formData.tipo, hra_verde_mex: formData.tipo, hra_rojo_ame: formData.tipo, ent_insp: formData.tipo, sello_nuevo: formData.tipo,
+      //       imporlot: formData.tipo, hra_entrega: formData.tipo, placas: formData.tipo})
+      // else
+      //       setFormData(tractor, operador, caja, cliente, origen, destino, tipo, aduana, no_sello);
       await appApi.post('/movimientos/new', {...formData, idcaptura: dataCaptura, fecha: startDate})
         .then(resp => {
           handleClose()
@@ -156,7 +169,7 @@ import { useAuthStore } from '../../hooks';
   const handleUpdateMov = async() => {
     if (formData.id) {
       //updating 
-      if(!validarPermiso(user.permiso, "update")) return;
+      // if(!validarPermiso(user.permiso, "update")) return;
       const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");
       if(confirm) 
         await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
@@ -195,9 +208,9 @@ import { useAuthStore } from '../../hooks';
       { field: "hra_rojo_mex" , headerName:"Hora Rojo Mex"  , cellEditorSelector: cellEditorSelector },
       { field: "hra_verde_mex", headerName:"Hora Verde Mex" , cellEditorSelector: cellEditorSelector },
       { field: "hra_rojo_ame" , headerName:"Hora Rojo Ame"  , cellEditorSelector: cellEditorSelector },
-      { field: "ent_insp" },
+      { field: "ent_insp" , cellEditorSelector: cellEditorSelector },
       { field: "sello_nuevo", headerName:"Sello Nuevo" },
-      { field: "imporlot" },
+      { field: "imporlot" , cellEditorSelector: cellEditorSelector },
       { field: "hra_entrega"  , headerName:"Hora Entrega"   , cellEditorSelector: cellEditorSelector },
       { field: "placas"},
       { field: "observacion", minWidth: 250 },

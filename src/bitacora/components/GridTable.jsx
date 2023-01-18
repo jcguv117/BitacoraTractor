@@ -82,13 +82,11 @@ import Swal from 'sweetalert2';
 
     const onDateChange = (date) => {
       setStartDate(date);
-      // getMovimientos();
     }
 
     const onOptionChange = (e) => {
       const { value } = e.target
       setDataCaptura(value);
-      // getMovimientos();
     }
 
     const onGridReady = (params) => {
@@ -133,7 +131,6 @@ import Swal from 'sweetalert2';
   }
 
   const handleUpdateMov = async() => {
-    // console.log("update",formData);
     if (formData.id) {
       //updating 
       const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");

@@ -1,15 +1,7 @@
 import axios from 'axios';
 
-const getEnvVariables = () => {
 
-    import.meta.env;
-
-    return {
-        ...import.meta.env
-    }
-}
-
-const { VITE_API_URL } = getEnvVariables()
+const { VITE_API_URL } = import.meta.env;
 
 
 const appApi = axios.create({

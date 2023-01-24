@@ -148,10 +148,12 @@ import { useContext } from 'react';
   }
 
   const handleFormSubmitMov = async() => {
-    const {tractor, operador, caja, cliente, origen, destino, tipo, aduana, no_sello } = formData;
+    const {tractor, operador, caja, cliente, origen, destino, tipo, aduana, no_sello, 
+            hra_llegada, hra_salida, hra_rojo_mex, hra_verde_mex, hra_rojo_ame, ent_insp, sello_nuevo, 
+            imporlot, hra_entrega, placas } = formData;
     if (formData.id) {
-      //updating movimiento
       if(!validarPermiso(permission, "update")) return;
+      //updating movimiento
       const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");
       confirm && await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
         .then(resp => {
@@ -160,13 +162,17 @@ import { useContext } from 'react';
         })
     } 
     else {
-      // adding new movimiento
+  
       if(!validarPermiso(permission, "add")) return;
-      // if(formData.tipo != "EXPO" || formData.tipo != "IMPO")
-      //       setFormData({...formData, hra_llegada: formData.tipo, hra_salida: formData.tipo, hra_rojo_mex: formData.tipo, hra_verde_mex: formData.tipo, hra_rojo_ame: formData.tipo, ent_insp: formData.tipo, sello_nuevo: formData.tipo,
-      //       imporlot: formData.tipo, hra_entrega: formData.tipo, placas: formData.tipo})
-      // else
-      //       setFormData(tractor, operador, caja, cliente, origen, destino, tipo, aduana, no_sello);
+      //validacion de tipo movimiento diferente
+      if(tipo.trim() != "EXPO" && tipo.trim() != "IMPO") {
+        for (const [key, value] of Object.entries(
+          {hra_llegada, hra_salida, hra_rojo_mex, hra_verde_mex, hra_rojo_ame, ent_insp, sello_nuevo, imporlot, hra_entrega, placas}
+          )) {formData[key] = formData.tipo;}
+        }
+        else
+          setFormData(tractor, operador, caja, cliente, origen, destino, tipo, aduana, no_sello);
+      // adding new movimiento
       await appApi.post('/movimientos/new', {...formData, idcaptura: dataCaptura, fecha: startDate})
         .then(resp => {
           handleClose()

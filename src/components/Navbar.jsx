@@ -19,8 +19,8 @@ export const Navbar = () => {
 
     const customPermisoStr = (value) => {
         if(value == 1 ) return 'Capturista';
-        if(value == 2 ) return 'Mediador';
-        if(value == 3 ) return 'Solucionador';
+        if(value == 2 ) return 'Ejecutivo';
+        if(value == 3 ) return 'Gerencial';
         if(value == 9 ) return 'Administrador';
     }
 

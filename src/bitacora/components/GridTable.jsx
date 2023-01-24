@@ -23,17 +23,18 @@ import { useContext } from 'react';
 
 
   const validarPermiso = (permiso, accion="") => {
+    let isEqual = new Date(document.querySelector('#datePicker').value).toDateString() == new Date().toDateString(); 
     switch(accion){
       case 'add':
-          if(permiso == 9 || permiso == 1 || permiso == 2 || permiso == 3) return true;
-          else Swal.fire('Permiso Denegado', 'No tiene permiso para agregar', 'error');
+          if( (permiso == 1 || permiso == 2) && isEqual || permiso == 3 || permiso == 9) return true;
+          else Swal.fire('Permiso Denegado', `No tiene permiso para agregar ${(!isEqual?"con fecha distinta": "")}`, 'error');
         break;
       case 'update':
-          if(permiso == 9 || permiso == 2 || permiso == 3) return true;
-          else Swal.fire('Permiso Denegado', 'No tiene permiso para actualizar', 'error');
+          if( (permiso == 2) && isEqual || permiso == 3 || permiso == 9) return true;
+          else Swal.fire('Permiso Denegado', `No tiene permiso para actualizar ${(!isEqual?"con fecha distinta": "")}`, 'error');
         break;
       case 'remove':
-          if(permiso == 9 || permiso == 3) return true;
+          if(permiso == 3 || permiso == 9) return true;
           else Swal.fire('Permiso Denegado', 'No tiene permiso para eliminar', 'error');
         break;
     }
@@ -60,8 +61,9 @@ import { useContext } from 'react';
 
     const gridRef = useRef();
 
-    const handleClickOpen = () => {
-      setOpen(true);
+    const handleClickOpen = (accion) => {
+      if(validarPermiso(permission, accion))
+          setOpen(true);
     };
 
     const handleClose = () => {
@@ -132,7 +134,7 @@ import { useContext } from 'react';
   // setting update row data to form data and opening pop up window
   const handleUpdate = (oldData) => {
     setFormData(oldData)
-    handleClickOpen()
+    handleClickOpen("update")
   }
 
   const handleDeleteMov = async(data) => {
@@ -280,7 +282,7 @@ import { useContext } from 'react';
                   <Button variant="contained" color="primary" onClick={onBtnExport}><FontAwesomeIcon icon={faFileExport}/></Button>
                 </Tooltip>
                 <Tooltip title="Agregar movimiento">
-                  <Button variant="contained" color="primary" onClick={handleClickOpen}><FontAwesomeIcon icon={faPlus}/></Button>
+                  <Button variant="contained" color="primary" onClick={() => handleClickOpen("add")}><FontAwesomeIcon icon={faPlus}/></Button>
                 </Tooltip>
                 <Tooltip title="Actualizar Registros">
                   <Button variant="contained" color="primary" onClick={updateItems}><FontAwesomeIcon icon={faRefresh}/></Button>

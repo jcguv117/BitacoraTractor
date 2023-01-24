@@ -24,8 +24,8 @@ import Swal from 'sweetalert2';
     Swal.fire('Información',
     `<div>
       <strong>Capturista:</strong> altas de registros.<br/>
-      <strong>Mediador:</strong> altas y modificaciones de registros.<br/>
-      <strong>Solucionador:</strong> altas, modificaciones y eliminar registros.<br/>
+      <strong>Ejecutivo:</strong> altas y modificaciones de registros.<br/>
+      <strong>Gerencial:</strong> altas, modificaciones y eliminar registros.<br/>
       <strong>Administrador:</strong>	altas, modificaciones y eliminar + panel.<br/>
     </div>`, 
     'info');
@@ -56,10 +56,10 @@ import Swal from 'sweetalert2';
                   onChange={handleChange}
                   label="Permiso"
                 >
-                  <MenuItem value={1}>Capturista  </MenuItem>
-                  <MenuItem value={2}>Mediador    </MenuItem>
-                  <MenuItem value={3}>Solucionador</MenuItem>
-                  <MenuItem value={9}>Administrador</MenuItem>
+                  <MenuItem value={1}>Capturista    </MenuItem>
+                  <MenuItem value={2}>Ejecutivo     </MenuItem>
+                  <MenuItem value={3}>Gerencial     </MenuItem>
+                  <MenuItem value={9}>Administrador </MenuItem>
                 </Select>
               </FormControl>
             </Box>

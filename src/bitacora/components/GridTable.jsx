@@ -168,10 +168,9 @@ import { useContext } from 'react';
       if(tipo.trim() != "EXPO" && tipo.trim() != "IMPO") {
         for (const [key, value] of Object.entries(
           {hra_llegada, hra_salida, hra_rojo_mex, hra_verde_mex, hra_rojo_ame, ent_insp, sello_nuevo, imporlot, hra_entrega, placas}
-          )) {formData[key] = formData.tipo;}
+          )) {formData[key] = tipo;}
         }
-        else
-          setFormData(tractor, operador, caja, cliente, origen, destino, tipo, aduana, no_sello);
+
       // adding new movimiento
       await appApi.post('/movimientos/new', {...formData, idcaptura: dataCaptura, fecha: startDate})
         .then(resp => {

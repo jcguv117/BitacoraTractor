@@ -1,5 +1,5 @@
 import { Button, Tooltip } from "@mui/material";
-import { forwardRef } from "react";
+import { forwardRef, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import DatePicker from "react-datepicker";
@@ -8,10 +8,12 @@ import "react-datepicker/dist/react-datepicker.css"
 
 
 export default function DateButton({onDateChange, startDate}) {
+
+  const ref = useRef(null);
     
     const CustomInput = forwardRef(({ value, onClick }, ref) => (
       <Tooltip title="Cambiar fecha">
-        <Button variant="contained" color="primary" onClick={onClick} className="d-block">
+        <Button id='datePicker'  variant="contained" color="primary" onClick={onClick} className="d-block" value={value}>
           <FontAwesomeIcon icon={faCalendarAlt} /> &nbsp; {value}</Button>
       </Tooltip>
     ));
@@ -19,6 +21,7 @@ export default function DateButton({onDateChange, startDate}) {
     return (
     <div>
       <DatePicker
+        ref={ref}
         selected={startDate}
         onChange={(date) => onDateChange(date)}
         customInput={<CustomInput />}

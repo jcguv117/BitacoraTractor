@@ -3,7 +3,7 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faPen, faPlus, faFileExport } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faPen, faPlus, faFileExport, faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { Grid, Button, Tooltip } from '@mui/material';
 import FormDialog from './DialogForm';
 import DateButton from './DateButton';
@@ -11,7 +11,7 @@ import OptionCapturas from './OptionCapturas';
 import { appApi } from '../../api';
 import TimeEditor from './TimeEditor';
 import Swal from 'sweetalert2';
-import { useAuthStore } from '../../hooks';
+import { useContext } from 'react';
 
   const cellEditorSelector = (params) => {
     return {
@@ -20,6 +20,7 @@ import { useAuthStore } from '../../hooks';
       popupPosition: 'under',
     };
   };
+
 
   const validarPermiso = (permiso, accion="") => {
     switch(accion){
@@ -45,8 +46,8 @@ import { useAuthStore } from '../../hooks';
     hra_llegada: "", hra_salida: "", hra_rojo_mex: "", hra_verde_mex: "", hra_rojo_ame: "", ent_insp: "", sello_nuevo: "",
     imporlot: "", hra_entrega: "", placas: "" }
     
-    const GridTable = () => {
-    const { user } = useAuthStore();
+    const GridTable = ({Permission}) => {
+    const permission = useContext(Permission);
     const [gridApi, setGridApi] = useState(null);
     const [tableData, setTableData] = useState(null);
     const [open, setOpen] = useState(false);
@@ -57,6 +58,7 @@ import { useAuthStore } from '../../hooks';
     const [dataCaptura, setDataCaptura] = useState(1);
     const [optCaptura, setOptCaptura] = useState([{idcaptura: "", nombre: " - "}]);
 
+    const gridRef = useRef();
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -78,8 +80,7 @@ import { useAuthStore } from '../../hooks';
 
     useEffect(() => {
       setInterval(() => {
-        console.log("redraw")
-        gridRef.current.api.redrawRows();
+        getMovimientosBTN();
       }, 600000);
     }, [])
 
@@ -92,10 +93,17 @@ import { useAuthStore } from '../../hooks';
     const getMovimientos = async(date = "", idcaptura = 0) => {
       const fecha   = (date) ? date : startDate;
       const captura = (idcaptura) ? idcaptura : dataCaptura;
-      console.log("getMovimientos ", fecha, captura);
         const { data } = await appApi.post('/movimientos', {captura, fecha});
         setTableData(data);
     }
+
+    const getMovimientosBTN =async() => {
+      const fecha = new Date(document.querySelector('#datePicker').value);
+      const captura = parseInt(document.querySelector('#capturaSelect').value);
+      const { data } = await appApi.post('/movimientos', {captura, fecha});
+      setTableData(data);
+    }
+
 
     const getCapturas = async() => {
       const { data } = await appApi.get('/capturas');
@@ -129,7 +137,7 @@ import { useAuthStore } from '../../hooks';
 
   const handleDeleteMov = async(data) => {
     const {idcaptura, fecha, id} = data;
-    // if(!validarPermiso(user.permiso, "remove")) return;
+    if(!validarPermiso(permission, "remove")) return;
     const confirm = window.confirm("¿Está seguro/a de borrar el registro?", id)
     if (confirm) {
       await appApi.delete('/movimientos', { params: { captura: idcaptura, fecha: fecha, id: id } })
@@ -141,7 +149,7 @@ import { useAuthStore } from '../../hooks';
     const {tractor, operador, caja, cliente, origen, destino, tipo, aduana, no_sello } = formData;
     if (formData.id) {
       //updating movimiento
-      // if(!validarPermiso(user.permiso, "update")) return;
+      if(!validarPermiso(permission, "update")) return;
       const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");
       confirm && await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
         .then(resp => {
@@ -151,7 +159,7 @@ import { useAuthStore } from '../../hooks';
     } 
     else {
       // adding new movimiento
-      // if(!validarPermiso(user.permiso, "add")) return;
+      if(!validarPermiso(permission, "add")) return;
       // if(formData.tipo != "EXPO" || formData.tipo != "IMPO")
       //       setFormData({...formData, hra_llegada: formData.tipo, hra_salida: formData.tipo, hra_rojo_mex: formData.tipo, hra_verde_mex: formData.tipo, hra_rojo_ame: formData.tipo, ent_insp: formData.tipo, sello_nuevo: formData.tipo,
       //       imporlot: formData.tipo, hra_entrega: formData.tipo, placas: formData.tipo})
@@ -169,7 +177,7 @@ import { useAuthStore } from '../../hooks';
   const handleUpdateMov = async() => {
     if (formData.id) {
       //updating 
-      // if(!validarPermiso(user.permiso, "update")) return;
+      if(!validarPermiso(permission, "update")) return;
       const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");
       if(confirm) 
         await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
@@ -180,10 +188,6 @@ import { useAuthStore } from '../../hooks';
       else setEditGridCell(false);
     } 
   }
-
-    //Example Ag-grid
-    const gridRef = useRef();
-
 
     const [columnDefs, setColumnDefs] = useState([
       {
@@ -248,34 +252,20 @@ import { useAuthStore } from '../../hooks';
     const getRowStyle = params => {
       const { data } = params;
       const isEmpty = (key) => data[key] === null || data[key] === '' || data[key] == undefined;
-
       if(Object.keys(initialValue).some(isEmpty))
         return { background: '#ffc107' }//warning-color
       else
         return { background: '#198754de'} //success-color
     };
-    
-    const onCellEditingStarted = useCallback((event) => {
-      console.log('cellEditingStarted');
-      // console.log(event);
-    }, []);
 
     const onCellValueChanged= useCallback((event) => {
       const {newValue, oldValue, data} = event;
-      console.log('onCellValueChanged');
-      console.log(event);
       (newValue != oldValue) && setFormData({...data, [event.column.userProvidedColDef.field]: newValue.toUpperCase() });
       (newValue != oldValue) && setEditGridCell(true);
-      console.log({...data, [event.column.userProvidedColDef.field]: newValue });
     }, []);
 
-    const onCellEditingStopped = useCallback((event) => {
-      console.log('cellEditingStopped');
-      const {data, value, valueChanged} = event;
-      valueChanged && setFormData({...data, [event.column.userProvidedColDef.field]: value });
-      valueChanged && setEditGridCell(true);
-      //  handleEditCell(event.data);
-      // handleFormSubmit();
+    const updateItems = useCallback(async() => {
+      getMovimientosBTN();
     }, []);
   
     return (
@@ -292,6 +282,9 @@ import { useAuthStore } from '../../hooks';
                 <Tooltip title="Agregar movimiento">
                   <Button variant="contained" color="primary" onClick={handleClickOpen}><FontAwesomeIcon icon={faPlus}/></Button>
                 </Tooltip>
+                <Tooltip title="Actualizar Registros">
+                  <Button variant="contained" color="primary" onClick={updateItems}><FontAwesomeIcon icon={faRefresh}/></Button>
+                </Tooltip>
               </div>
           </Grid>
             <div style={{ height: '100%', width: '100%' }} className="ag-theme-alpine">
@@ -302,9 +295,7 @@ import { useAuthStore } from '../../hooks';
                 defaultColDef={defaultColDef}
                 pagination={true}
                 getRowStyle={getRowStyle}
-                // onCellEditingStarted={onCellEditingStarted}
                 onCellValueChanged={onCellValueChanged}
-                // onCellEditingStopped={onCellEditingStopped}
               ></AgGridReact>
             </div>
             <FormDialog open={open} handleClose={handleClose}

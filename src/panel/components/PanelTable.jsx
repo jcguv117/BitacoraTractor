@@ -115,6 +115,9 @@ import FormDialog from './DialogForm';
       };
     }, []);
 
+    //fix navbar show up, overflow hidden
+    document.querySelector("body").style.overflow = "auto";
+    document.querySelector("body").style.paddingRight = "0px";
 
     return (
       <div style={containerStyle}>

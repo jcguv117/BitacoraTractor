@@ -274,6 +274,10 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     const updateItems = useCallback(async() => {
       getMovimientosBTN();
     }, []);
+
+    //fix navbar show up, overflow hidden
+    document.querySelector("body").style.overflow = "auto";
+    document.querySelector("body").style.paddingRight = "0px";
   
     return (
       <div style={{ height: '100%', width: '100%' }}>

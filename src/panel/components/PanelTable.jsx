@@ -30,8 +30,6 @@ import FormDialog from './DialogForm';
       setFormData({...formData, permiso: event.target.value});
     };
 
-    const url = `http://localhost:8000/api/usuarios`;
-
     // calling getUsuarios function for first time 
     useEffect(() => {
       getUsuarios()
@@ -69,27 +67,18 @@ import FormDialog from './DialogForm';
     }
   }
 
-  const handleFormSubmit = () => {
+  const handleFormSubmit = async() => {
     if (formData.id) {
       //updating a user 
       const confirm = window.confirm("¿Está seguro/a de actualizar el registro?")
-      confirm && fetch(url + `/${formData.id}`, {
-        method: "PUT", body: JSON.stringify(formData), headers: {
-          'content-type': "application/json"
-        }
-      }).then(resp => resp.json())
+      confirm && await appApi.put('/usuarios' + `/${formData.id}`, formData)
         .then(resp => {
           handleClose()
           getUsuarios()
-
         })
     } else {
       // adding new user
-      fetch(url+'/new', {
-        method: "POST", body: JSON.stringify(formData), headers: {
-          'content-type': "application/json"
-        }
-      }).then(resp => resp.json())
+      await appApi.post('/usuarios/new', formData)
         .then(resp => {
           handleClose()
           getUsuarios()

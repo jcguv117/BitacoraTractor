@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { useAuthStore, useForm } from '../../hooks';
 import './login.css';
-import logo from '../../assets/logo-rex.png';
 
 const loginFormFields = {
     loginUser:    '',
@@ -54,7 +53,7 @@ export const LoginPage = () => {
         <div className="container login-container">
             <div className="d-flex justify-content-center row">
                 <div className="col-md-12 login-form-1">
-                    <h3><img src={logo} width="80" height="57"  className='bg-white rounded rounded-3'/> </h3>
+                    <h3><img src="./logo-rex.png" width="80" height="57"  className='bg-white rounded rounded-3'/> </h3>
                     <form onSubmit={ loginSubmit }>
                         <div className="form-group mb-2">
                             <input 

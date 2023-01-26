@@ -5,9 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
-import logo from '../assets/logo-rex.png';
-
-
 export const Navbar = () => {
     
     const navigate = useNavigate();
@@ -37,7 +34,7 @@ export const Navbar = () => {
     <nav className="navbar navbar-dark bg-dark fixed-top">
         <div className="container-fluid">
             <a className="navbar-brand hideOverFlow w-75" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
-                <img src={logo} width="70" height="56"  className='bg-white rounded rounded-3'/> &nbsp;
+                <img src="./logo-rex.png" width="70" height="56"  className='bg-white rounded rounded-3'/> &nbsp;
                  BITACORA DE MONITOREO DE UNIDADES
             </a>
             <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">

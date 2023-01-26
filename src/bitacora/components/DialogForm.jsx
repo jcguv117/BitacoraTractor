@@ -27,7 +27,6 @@ import { useState } from 'react';
  const formSubmit = () => {
   const datos = {tractor,operador,caja,cliente,origen,destino,tipo,aduana,no_sello}
   const isEmpty = (key) => data[key] === null || data[key] === '' || data[key] == undefined;
-  console.log(datos);
   if(Object.keys(datos).some(isEmpty))
     Swal.fire({
       title: 'Se deben llenar todos los datos.',

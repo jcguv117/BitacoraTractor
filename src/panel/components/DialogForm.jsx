@@ -11,26 +11,44 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 
- const FormDialog = ({open,handleClose,data,onChange,handleFormSubmit, handleChange}) => {
+ const FormDialog = ({open,handleClose,data,onChange,handleFormSubmit,handleChange}) => {
   const {
       id,
       user ,
       name,
       password,
+      passRepeat,
       permiso
   } = data;
 
   const popInfo = () => {
     Swal.fire('Información',
     `<div>
-      <strong>Capturista:</strong> altas de registros.<br/>
-      <strong>Ejecutivo:</strong> altas y modificaciones de registros.<br/>
+      <strong>Capturista:</strong> altas de registros (solo en el día actual).<br/>
+      <strong>Ejecutivo:</strong> altas y modificaciones de registros (solo en el día actual).<br/>
       <strong>Gerencial:</strong> altas, modificaciones y eliminar registros.<br/>
       <strong>Administrador:</strong>	altas, modificaciones y eliminar + panel.<br/>
     </div>`, 
     'info');
   }
 
+  const formSubmit = () => {
+    const datos = {user,name,password,permiso}
+    const isEmpty = (key) => data[key] === null || data[key] === '' || data[key] == undefined;
+
+    if(Object.keys(datos).some(isEmpty))
+      return Swal.fire('Se deben llenar todos los datos.', '','info');
+ 
+    if(!isEmpty("passRepeat") && (password !== passRepeat) && !isEmpty("id")){
+      return Swal.fire('Las contraseñas no coinciden.', '', 'info');
+    }
+    
+    if(password !== passRepeat && isEmpty("id"))
+      return Swal.fire('Las contraseñas no coinciden.', '', 'info');
+    
+    //submit data
+    handleFormSubmit();
+   }
 
   return (
     <div>
@@ -45,7 +63,8 @@ import Swal from 'sweetalert2';
          <form>
             <TextField id="user"      value={user} onChange={e=>onChange(e)} label="Usuario" variant="outlined" margin="dense" fullWidth required />
             <TextField id="name"      value={name} onChange={e=>onChange(e)} label="Nombre" variant="outlined" margin="dense" fullWidth required/>
-            <TextField id="password"  value={password} onChange={e=>onChange(e)} label="Contraseña" variant="outlined" margin="dense" fullWidth required/>
+            <TextField id="password"  value={password} onChange={e=>onChange(e, false)} label="Contraseña" type="password" variant="outlined" margin="dense" fullWidth required/>
+            <TextField id="passRepeat" value={passRepeat} onChange={e=>onChange(e, false)} label="Repetir Contraseña" type="password" variant="outlined" margin="dense" fullWidth/>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel id="select-permiso-user-label">Permiso</InputLabel>
@@ -71,7 +90,7 @@ import Swal from 'sweetalert2';
           <Button onClick={handleClose} color="secondary" variant="outlined">
             Cancelar
           </Button>
-          <Button  color="primary" onClick={()=>handleFormSubmit()} variant="contained">
+          <Button  color="primary" onClick={()=>formSubmit()} variant="contained">
             {id?"Actualizar":"Aceptar"}
           </Button>
         </DialogActions>

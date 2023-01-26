@@ -16,7 +16,7 @@ import FormDialog from './DialogForm';
       if(value == 9 ) return 'Administrador';
       return "";
    }
-  const initialValue = { user: "" , name: "", password: "", permiso: "" }
+  const initialValue = { user: "" , name: "", password: "", passRepeat: "", permiso: "" }
   const PanelTable = () => {
     //FormDialog 
     const [tableData, setTableData] = useState(null)
@@ -46,14 +46,14 @@ import FormDialog from './DialogForm';
       setFormData(initialValue)
     };
 
-    const onChange = (e) => {
+    const onChange = (e, upper = true) => {
       const { value, id } = e.target
-      setFormData({ ...formData, [id]: value.toUpperCase() })
+      setFormData({ ...formData, [id]: (upper) ? value.toUpperCase() : value })
     }
    
   // setting update row data to form data and opening pop up window
   const handleUpdate = (oldData) => {
-    setFormData(oldData)
+    setFormData({...oldData, passRepeat: ""});
     handleClickOpen()
   }
 

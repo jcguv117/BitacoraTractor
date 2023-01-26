@@ -12,6 +12,7 @@ import { appApi } from '../../api';
 import TimeEditor from './TimeEditor';
 import Swal from 'sweetalert2';
 import { useContext } from 'react';
+import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
 
   const cellEditorSelector = (params) => {
     return {
@@ -83,7 +84,7 @@ import { useContext } from 'react';
     useEffect(() => {
       setInterval(() => {
         getMovimientosBTN();
-      }, 600000);
+      }, 300000); //5 min
     }, [])
 
     useEffect(() => {
@@ -241,7 +242,6 @@ import { useContext } from 'react';
         floatingFilterComponentParams: {
           suppressFilterButton: true,
         },
-
       };
     }, []);
 
@@ -277,7 +277,7 @@ import { useContext } from 'react';
   
     return (
       <div style={{ height: '100%', width: '100%' }}>
-        <div className="example-wrapper table">
+        <div className="table">
           <div className="grid-wrapper">
           <Grid align="right" className='d-flex justify-content-between flex-fill gap-3 p-2'>
               <DateButton onDateChange={onDateChange} startDate={startDate}/>
@@ -301,6 +301,7 @@ import { useContext } from 'react';
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 pagination={true}
+                localeText={AG_GRID_LOCALE_CUSTOM}
                 getRowStyle={getRowStyle}
                 onCellValueChanged={onCellValueChanged}
               ></AgGridReact>

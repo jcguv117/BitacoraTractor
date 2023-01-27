@@ -247,10 +247,10 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
 
 
     const onBtnExport = useCallback(() => {
-      let fecha = new Date(document.querySelector('#datePicker').value).toDateString()
+      let fecha = new Date(document.querySelector('#datePicker').value);
       gridRef.current.api.exportDataAsCsv(
         {
-          fileName: "exportacion_"+fecha,
+          fileName: "exportacion_"+fecha.toLocaleDateString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit'}),
           columnKeys: ['id', 'tractor', 'operador', 'caja', 'cliente', 'origen', 'destino', 'tipo', 'aduana', 'no_sello', 'hra_llegada', 
                         'hra_salida', 'hra_rojo_mex', 'hra_verde_mex', 'hra_rojo_ame', 'ent_insp', 'sello_nuevo', 'imporlot', 'hra_entrega', 'placas', 'observacion', 'sistema']
         }

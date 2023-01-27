@@ -19,6 +19,7 @@ export const Navbar = () => {
         if(value == 2 ) return 'Ejecutivo';
         if(value == 3 ) return 'Gerencial';
         if(value == 9 ) return 'Administrador';
+        return "";
     }
 
     const showPanel = () => {
@@ -52,7 +53,7 @@ export const Navbar = () => {
                 <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <div className='d-flex m-2'>
                         <h5 className="dropdown-item">
-                            <span className=''>
+                            <span>
                                 {customPermisoStr(user.permiso)}
                             </span>
                         </h5>

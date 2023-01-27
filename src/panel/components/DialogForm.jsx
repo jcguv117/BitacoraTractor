@@ -33,7 +33,7 @@ import Swal from 'sweetalert2';
   }
 
   const formSubmit = () => {
-    const datos = {user,name,password,permiso}
+    const datos = {user,name,password, permiso}
     const isEmpty = (key) => data[key] === null || data[key] === '' || data[key] == undefined;
 
     if(Object.keys(datos).some(isEmpty))
@@ -75,6 +75,7 @@ import Swal from 'sweetalert2';
                   onChange={handleChange}
                   label="Permiso"
                 >
+                  <MenuItem value={0}> - Sin Permiso - </MenuItem>
                   <MenuItem value={1}>Capturista    </MenuItem>
                   <MenuItem value={2}>Ejecutivo     </MenuItem>
                   <MenuItem value={3}>Gerencial     </MenuItem>

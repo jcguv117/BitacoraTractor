@@ -16,7 +16,7 @@ import FormDialog from './DialogForm';
       if(value == 9 ) return 'Administrador';
       return "";
    }
-  const initialValue = { user: "" , name: "", password: "", passRepeat: "", permiso: "" }
+  const initialValue = { user: "" , name: "", password: "", passRepeat: "", permiso: 0 }
   const PanelTable = () => {
     //FormDialog 
     const [tableData, setTableData] = useState(null)

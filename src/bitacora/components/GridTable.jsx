@@ -168,7 +168,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       //validacion de tipo movimiento diferente
       if(tipo.trim() != "EXPO" && tipo.trim() != "IMPO") {
         for (const [key, value] of Object.entries(
-          {hra_llegada, hra_salida, hra_rojo_mex, hra_verde_mex, hra_rojo_ame, ent_insp, sello_nuevo, imporlot, hra_entrega, placas}
+          {sello_nuevo, placas}
           )) {formData[key] = tipo;}
         }
 
@@ -247,9 +247,10 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
 
 
     const onBtnExport = useCallback(() => {
+      let fecha = new Date(document.querySelector('#datePicker').value).toDateString()
       gridRef.current.api.exportDataAsCsv(
         {
-          fileName: "exportacion_"+startDate.toLocaleDateString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit'}),
+          fileName: "exportacion_"+fecha,
           columnKeys: ['id', 'tractor', 'operador', 'caja', 'cliente', 'origen', 'destino', 'tipo', 'aduana', 'no_sello', 'hra_llegada', 
                         'hra_salida', 'hra_rojo_mex', 'hra_verde_mex', 'hra_rojo_ame', 'ent_insp', 'sello_nuevo', 'imporlot', 'hra_entrega', 'placas', 'observacion', 'sistema']
         }

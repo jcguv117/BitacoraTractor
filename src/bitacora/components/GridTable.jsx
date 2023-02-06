@@ -120,6 +120,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     }
 
     const onDateChange = (date) => {
+      console.log(date);
       setStartDate(date);
     }
 
@@ -205,26 +206,26 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
           <Button variant="outlined" color="secondary" onClick={() => handleDeleteMov(params.data)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
         </div>
       },
-      { field: "id", headerName:"#", sort: 'desc', editable:false },
-      { field: "tractor", editable:false },
-      { field: "operador", editable:false  },
-      { field: "caja", editable:false  },
-      { field: "cliente", editable:false  },
-      { field: "origen", editable:false  },
-      { field: "destino", editable:false  },
-      { field: "tipo", editable:false  },
-      { field: "aduana", editable:false  },
-      { field: "no_sello",  headerName:"# Sello", editable:false  },
+      { field: "id", headerName:"#", editable:false, minWidth: 80 },
+      { field: "tractor"  , editable:false },
+      { field: "operador" , editable:false, minWidth: 210 },
+      { field: "caja"     , editable:false, minWidth: 150  },
+      { field: "cliente"  , editable:false, minWidth: 150  },
+      { field: "origen"   , editable:false, minWidth: 150  },
+      { field: "destino"  , editable:false, minWidth: 150 },
+      { field: "tipo"     , editable:false, minWidth: 150  },
+      { field: "aduana"   , editable:false },
+      { field: "no_sello",  headerName:"# Sello", editable:false, minWidth: 150  },
       { field: "hra_llegada"  , headerName:"Hora Llegada"   , cellEditorSelector: cellEditorSelector },
       { field: "hra_salida"   , headerName:"Hora Salida"    , cellEditorSelector: cellEditorSelector },
       { field: "hra_rojo_mex" , headerName:"Hora Rojo Mex"  , cellEditorSelector: cellEditorSelector },
       { field: "hra_verde_mex", headerName:"Hora Verde Mex" , cellEditorSelector: cellEditorSelector },
       { field: "hra_rojo_ame" , headerName:"Hora Rojo Ame"  , cellEditorSelector: cellEditorSelector },
       { field: "ent_insp" , cellEditorSelector: cellEditorSelector },
-      { field: "sello_nuevo", headerName:"Sello Nuevo" },
-      { field: "imporlot" , cellEditorSelector: cellEditorSelector },
+      { field: "sello_nuevo", headerName:"Sello Nuevo", minWidth: 150 },
+      { field: "imporlot" , headerName:"Salida Aduana Ame" , cellEditorSelector: cellEditorSelector },
       { field: "hra_entrega"  , headerName:"Hora Entrega"   , cellEditorSelector: cellEditorSelector },
-      { field: "placas"},
+      { field: "placas", minWidth: 150},
       { field: "observacion", minWidth: 250 },
       { field: "sistema" }
     ]);
@@ -232,7 +233,9 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     const defaultColDef = useMemo(() => {
       return {
         flex: 1,
-        minWidth: 210,
+        minWidth: 90,
+        wrapHeaderText: true,
+        autoHeaderHeight: true,
         editable: true,
         resizable: true,
         sortable: true,

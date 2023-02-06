@@ -23,6 +23,7 @@ export default function DateButton({onDateChange, startDate}) {
       <DatePicker
         ref={ref}
         selected={startDate}
+        dateFormat="dd/MM/yyyy"
         onChange={(date) => onDateChange(date)}
         customInput={<CustomInput />}
       />

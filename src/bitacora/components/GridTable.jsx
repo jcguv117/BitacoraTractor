@@ -22,6 +22,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     };
   };
 
+  const estados = ['FINALIZADO', 'PROCESANDO', 'PENDIENTE'];
 
   const validarPermiso = (permiso, accion="") => {
     let isEqual = new Date(document.querySelector('#datePicker').value).toDateString() == new Date().toDateString(); 
@@ -46,7 +47,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
   const initialValue = {
     tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", 
     hra_llegada: "", hra_salida: "", hra_rojo_mex: "", hra_verde_mex: "", hra_rojo_ame: "", ent_insp: "", sello_nuevo: "",
-    imporlot: "", hra_entrega: "", placas: "" }
+    imporlot: "", hra_entrega: "", checkpoint: "", hra_entrega_usa: "", placas: "" }
     
     const GridTable = ({Permission}) => {
     const permission = useContext(Permission);
@@ -97,6 +98,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       const fecha   = (date) ? date : startDate;
       const captura = (idcaptura) ? idcaptura : dataCaptura;
         const { data } = await appApi.post('/movimientos', {captura, fecha});
+        console.log("🚀 ~ file: GridTable.jsx:103 ~ getMovimientos ~ data", data)
         setTableData(data);
     }
 
@@ -200,6 +202,13 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
 
     const [columnDefs, setColumnDefs] = useState([
       {
+        field: "estado", headerName: "Estado", filter: false, minWidth: 120, 
+        cellEditor: 'agSelectCellEditor',
+        cellEditorParams: {
+          values: estados,
+        },
+      },
+      {
         headerName: "Acciones", sortable: false, editable:false, filter: false, minWidth: 170, 
         cellRenderer: (params) => <div>
           <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><FontAwesomeIcon icon={faPen}/></Button>
@@ -225,6 +234,8 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       { field: "sello_nuevo", headerName:"Sello Nuevo", minWidth: 150 },
       { field: "imporlot" , headerName:"Salida Aduana Ame" , cellEditorSelector: cellEditorSelector },
       { field: "hra_entrega"  , headerName:"Hora Entrega"   , cellEditorSelector: cellEditorSelector },
+      { field: "checkpoint" , cellEditorSelector: cellEditorSelector },
+      { field: "hra_entrega_usa"  , headerName:"Hora Entrega USA"   , cellEditorSelector: cellEditorSelector },
       { field: "placas", minWidth: 150},
       { field: "observacion", minWidth: 250 },
       { field: "sistema" }
@@ -255,18 +266,23 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
         {
           fileName: "exportacion_"+fecha.toLocaleDateString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit'}),
           columnKeys: ['id', 'tractor', 'operador', 'caja', 'cliente', 'origen', 'destino', 'tipo', 'aduana', 'no_sello', 'hra_llegada', 
-                        'hra_salida', 'hra_rojo_mex', 'hra_verde_mex', 'hra_rojo_ame', 'ent_insp', 'sello_nuevo', 'imporlot', 'hra_entrega', 'placas', 'observacion', 'sistema']
+                        'hra_salida', 'hra_rojo_mex', 'hra_verde_mex', 'hra_rojo_ame', 'ent_insp', 'sello_nuevo', 'imporlot', 'hra_entrega', 'checkpoint', 'hra_entrega_usa', 'placas', 'observacion', 'sistema']
         }
       );
     }, []);
 
     const getRowStyle = params => {
-      const { data } = params;
-      const isEmpty = (key) => data[key] === null || data[key] === '' || data[key] == undefined;
-      if(Object.keys(initialValue).some(isEmpty))
-        return { background: '#ffc107' }//warning-color
-      else
-        return { background: '#198754de'} //success-color
+      const { estado } = params.data;
+      switch (estado) {
+        case 'FINALIZADO':
+          return { background: '#198754de'}
+        case 'PROCESANDO':
+          return { background: '#f7f016' }
+        case 'PENDIENTE':
+          return { background: '#ffc107' }
+        default:
+          break;
+      }
     };
 
     const onCellValueChanged= useCallback((event) => {

@@ -14,6 +14,19 @@ import Swal from 'sweetalert2';
 import { useContext } from 'react';
 import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
 
+
+  const formatFecha = (fecha) => {
+    let sFecha = fecha.split("/");
+    let ffecha = `${sFecha[2]}-${sFecha[1]}-${sFecha[0]}`;
+    return ffecha;
+  }
+
+  const formatFechaExport = (fecha) => {
+    let sFecha = fecha.split("/");
+    let ffecha = `${sFecha[0]}_${sFecha[1]}_${sFecha[2]}`;
+    return ffecha;
+  }
+
   const cellEditorSelector = (params) => {
     return {
       component: TimeEditor,
@@ -22,10 +35,12 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     };
   };
 
-  const estados = ['FINALIZADO', 'PROCESANDO', 'PENDIENTE'];
+  const estados = ['','PROCESANDO', 'PENDIENTE', 'FINALIZADO'];
 
   const validarPermiso = (permiso, accion="") => {
-    let isEqual = new Date(document.querySelector('#datePicker').value).toDateString() == new Date().toDateString(); 
+    let fecha = formatFecha(document.querySelector('#datePicker').value);
+    let isEqual = fecha == new Date().toISOString().split('T')[0];
+     
     switch(accion){
       case 'add':
           if( (permiso == 1 || permiso == 2) && isEqual || permiso == 3 || permiso == 9) return true;
@@ -98,12 +113,11 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       const fecha   = (date) ? date : startDate;
       const captura = (idcaptura) ? idcaptura : dataCaptura;
         const { data } = await appApi.post('/movimientos', {captura, fecha});
-        console.log("🚀 ~ file: GridTable.jsx:103 ~ getMovimientos ~ data", data)
         setTableData(data);
     }
 
     const getMovimientosBTN =async() => {
-      const fecha = new Date(document.querySelector('#datePicker').value);
+      const fecha = formatFecha(document.querySelector('#datePicker').value);
       const captura = parseInt(document.querySelector('#capturaSelect').value);
       const { data } = await appApi.post('/movimientos', {captura, fecha});
       setTableData(data);
@@ -261,10 +275,10 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
 
 
     const onBtnExport = useCallback(() => {
-      let fecha = new Date(document.querySelector('#datePicker').value);
+      let fecha = formatFechaExport(document.querySelector('#datePicker').value);
       gridRef.current.api.exportDataAsCsv(
         {
-          fileName: "exportacion_"+fecha.toLocaleDateString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit'}),
+          fileName: "exportacion_"+fecha,
           columnKeys: ['id', 'tractor', 'operador', 'caja', 'cliente', 'origen', 'destino', 'tipo', 'aduana', 'no_sello', 'hra_llegada', 
                         'hra_salida', 'hra_rojo_mex', 'hra_verde_mex', 'hra_rojo_ame', 'ent_insp', 'sello_nuevo', 'imporlot', 'hra_entrega', 'checkpoint', 'hra_entrega_usa', 'placas', 'observacion', 'sistema']
         }

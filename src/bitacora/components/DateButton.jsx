@@ -2,10 +2,12 @@ import { Button, Tooltip } from "@mui/material";
 import { forwardRef, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
+import es from "date-fns/locale/es";
 
 import "react-datepicker/dist/react-datepicker.css"
 
+registerLocale('es', es);
 
 export default function DateButton({onDateChange, startDate}) {
 
@@ -25,6 +27,7 @@ export default function DateButton({onDateChange, startDate}) {
         selected={startDate}
         dateFormat="dd/MM/yyyy"
         onChange={(date) => onDateChange(date)}
+        locale="es"
         customInput={<CustomInput />}
       />
     </div>

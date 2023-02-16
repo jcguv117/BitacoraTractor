@@ -105,6 +105,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
 
     useEffect(() => {
       editGridCell && handleUpdateMov();
+      setEditGridCell(false);
     }, [formData])
 
 
@@ -136,7 +137,6 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     }
 
     const onDateChange = (date) => {
-      console.log(date);
       setStartDate(date);
     }
 
@@ -279,7 +279,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       gridRef.current.api.exportDataAsCsv(
         {
           fileName: "exportacion_"+fecha,
-          columnKeys: ['id', 'tractor', 'operador', 'caja', 'cliente', 'origen', 'destino', 'tipo', 'aduana', 'no_sello', 'hra_llegada', 
+          columnKeys: ['estado','id', 'tractor', 'operador', 'caja', 'cliente', 'origen', 'destino', 'tipo', 'aduana', 'no_sello', 'hra_llegada', 
                         'hra_salida', 'hra_rojo_mex', 'hra_verde_mex', 'hra_rojo_ame', 'ent_insp', 'sello_nuevo', 'imporlot', 'hra_entrega', 'checkpoint', 'hra_entrega_usa', 'placas', 'observacion', 'sistema']
         }
       );

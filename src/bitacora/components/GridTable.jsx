@@ -210,7 +210,9 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
           handleClose()
           getMovimientos()
         })
-      else setEditGridCell(false);
+      else 
+        getMovimientos();
+      setEditGridCell(false);
     } 
   }
 
@@ -239,16 +241,16 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       { field: "tipo"     , editable:false, minWidth: 150  },
       { field: "aduana"   , editable:false },
       { field: "no_sello",  headerName:"# Sello", editable:false, minWidth: 150  },
-      { field: "hra_llegada"  , headerName:"Hora Llegada"   , cellEditorSelector: cellEditorSelector },
-      { field: "hra_salida"   , headerName:"Hora Salida"    , cellEditorSelector: cellEditorSelector },
+      { field: "hra_llegada"  , headerName:"Hora Llegada Enganche"   , cellEditorSelector: cellEditorSelector },
+      { field: "hra_salida"   , headerName:"Hora Salida Patio"    , cellEditorSelector: cellEditorSelector },
       { field: "hra_rojo_mex" , headerName:"Hora Rojo Mex"  , cellEditorSelector: cellEditorSelector },
       { field: "hra_verde_mex", headerName:"Hora Verde Mex" , cellEditorSelector: cellEditorSelector },
       { field: "hra_rojo_ame" , headerName:"Hora Rojo Ame"  , cellEditorSelector: cellEditorSelector },
-      { field: "ent_insp" , cellEditorSelector: cellEditorSelector },
+      { field: "ent_insp" , headerName:"Entrada Inspección", cellEditorSelector: cellEditorSelector },
       { field: "sello_nuevo", headerName:"Sello Nuevo", minWidth: 150 },
       { field: "imporlot" , headerName:"Salida Aduana Ame" , cellEditorSelector: cellEditorSelector },
       { field: "hra_entrega"  , headerName:"Hora Entrega"   , cellEditorSelector: cellEditorSelector },
-      { field: "checkpoint" , cellEditorSelector: cellEditorSelector },
+      { field: "checkpoint", headerName: "Check point" , cellEditorSelector: cellEditorSelector },
       { field: "hra_entrega_usa"  , headerName:"Hora Entrega USA"   , cellEditorSelector: cellEditorSelector },
       { field: "placas", minWidth: 150},
       { field: "observacion", minWidth: 250 },

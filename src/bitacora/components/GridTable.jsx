@@ -58,6 +58,27 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     return false;
   }
 
+  const customSwal = (msg) =>{
+    Swal.fire({
+      position: 'top-end',
+      icon: 'success',
+      title: msg,
+      showConfirmButton: false,
+      timer: 1500
+    })
+  }
+
+  const confirmCustomSwal = (msg) =>{
+    return Swal.fire({
+      title: msg,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar'
+    });
+  }
   
   const initialValue = {
     tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", 
@@ -158,26 +179,34 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
   const handleDeleteMov = async(data) => {
     const {idcaptura, fecha, id} = data;
     if(!validarPermiso(permission, "remove")) return;
-    const confirm = window.confirm("¿Está seguro/a de borrar el registro?", id)
-    if (confirm) {
-      await appApi.delete('/movimientos', { params: { captura: idcaptura, fecha: fecha, id: id } })
-        .then(resp => getMovimientos(fecha, idcaptura));
-    }
+    const confirm = confirmCustomSwal("¿Está seguro/a de borrar el registro?")
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          await appApi.delete('/movimientos', { params: { captura: idcaptura, fecha: fecha, id: id } })
+          .then(resp =>{
+            getMovimientos(fecha, idcaptura)
+            customSwal('Registro Eliminado...')
+          });
+        }
+      });
   }
 
   const handleFormSubmitMov = async() => {
-    const {tractor, operador, caja, cliente, origen, destino, tipo, aduana, no_sello, 
-            hra_llegada, hra_salida, hra_rojo_mex, hra_verde_mex, hra_rojo_ame, ent_insp, sello_nuevo, 
-            imporlot, hra_entrega, placas } = formData;
+    const { tipo, sello_nuevo, placas } = formData;
     if (formData.id) {
       if(!validarPermiso(permission, "update")) return;
       //updating movimiento
-      const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");
-      confirm && await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
-        .then(resp => {
-          handleClose()
-          getMovimientos()
-        })
+      const confirm = confirmCustomSwal("¿Está seguro/a de actualizar el registro?")
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
+            .then(resp => {
+              handleClose()
+              getMovimientos()
+              customSwal('Registro Actualizado...')
+            })
+          }
+        });
     } 
     else {
   
@@ -194,6 +223,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
         .then(resp => {
           handleClose()
           getMovimientos()
+          customSwal('Registro Guardado...')
         })
     }
 
@@ -203,15 +233,19 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     if (formData.id) {
       //updating 
       if(!validarPermiso(permission, "update")) return;
-      const confirm = window.confirm("¿Está seguro/a de actualizar el registro?");
-      if(confirm) 
-        await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
-        .then(resp => {
-          handleClose()
-          getMovimientos()
-        })
-      else 
-        getMovimientos();
+      const confirm = confirmCustomSwal("¿Está seguro/a de actualizar el registro?")
+      .then(async (result) => {
+        if (result.isConfirmed) { 
+          await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
+          .then(resp => {
+            handleClose()
+            getMovimientos()
+            customSwal('Registro Actualizado...');
+          })
+        }
+        else 
+          getMovimientos();
+      });
       setEditGridCell(false);
     } 
   }

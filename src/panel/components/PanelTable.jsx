@@ -7,6 +7,7 @@ import { faTrashAlt, faPen, faUserPlus } from '@fortawesome/free-solid-svg-icons
 import { Grid, Button, Tooltip } from '@mui/material';
 import { appApi } from '../../api';
 import FormDialog from './DialogForm';
+import Swal from 'sweetalert2';
 
   const customCellPermiso = (params) => {
       const {value} = params;
@@ -16,6 +17,29 @@ import FormDialog from './DialogForm';
       if(value == 9 ) return 'Administrador';
       return "";
    }
+
+   const customSwal = (msg) =>{
+    Swal.fire({
+      position: 'top-end',
+      icon: 'success',
+      title: msg,
+      showConfirmButton: false,
+      timer: 1500
+    })
+  }
+
+  const confirmCustomSwal = (msg) =>{
+    return Swal.fire({
+      title: msg,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar'
+    });
+  }
+
   const initialValue = { user: "" , name: "", password: "", passRepeat: "", permiso: 0 }
   const PanelTable = () => {
     //FormDialog 
@@ -60,28 +84,39 @@ import FormDialog from './DialogForm';
   //deleting a user
   const handleDelete = async(data) => {
     const {id} = data;
-    const confirm = window.confirm("¿Está seguro/a de borrar el registro?", id)
-    if (confirm) {
-      await appApi.delete('/usuarios'+ `/${id}`)
-        .then(resp => getUsuarios());
-    }
+    const confirm = confirmCustomSwal("¿Está seguro/a de borrar el registro?")
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          await appApi.delete('/usuarios'+ `/${id}`)
+            .then(resp => {
+              getUsuarios()
+              customSwal('Registro Eliminado...');
+            });
+        }
+      });
   }
 
   const handleFormSubmit = async() => {
     if (formData.id) {
       //updating a user 
-      const confirm = window.confirm("¿Está seguro/a de actualizar el registro?")
-      confirm && await appApi.put('/usuarios' + `/${formData.id}`, formData)
-        .then(resp => {
-          handleClose()
-          getUsuarios()
-        })
+      const confirm = confirmCustomSwal("¿Está seguro/a de actualizar el registro?")
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          await appApi.put('/usuarios' + `/${formData.id}`, formData)
+            .then(resp => {
+              handleClose()
+              getUsuarios()
+              customSwal('Registro Actualizado...')
+            });
+        }
+      });
     } else {
       // adding new user
       await appApi.post('/usuarios/new', formData)
         .then(resp => {
           handleClose()
           getUsuarios()
+          customSwal('Registro Guardado...')
         })
     }
   }

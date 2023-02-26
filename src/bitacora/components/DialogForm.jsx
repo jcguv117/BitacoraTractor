@@ -22,10 +22,11 @@ import { useState } from 'react';
     tipo,
     aduana,
     no_sello,
+    placas
  } = data;
 
  const formSubmit = () => {
-  const datos = {tractor,operador,caja,cliente,origen,destino,tipo,aduana,no_sello}
+  const datos = {tractor,operador,caja,cliente,origen,destino,tipo,aduana,no_sello,placas}
   const isEmpty = (key) => data[key] === null || data[key] === '' || data[key] == undefined;
   if(Object.keys(datos).some(isEmpty))
     Swal.fire({
@@ -64,6 +65,7 @@ import { useState } from 'react';
             />
             <TextField id="aduana"     value={aduana}   onChange={e=>onChange(e)} label="Aduana"    variant="outlined" margin="dense" fullWidth required type="number" />
             <TextField id="no_sello"   value={no_sello} onChange={e=>onChange(e)} label="No Sello"  variant="outlined" margin="dense" fullWidth required />
+            <TextField id="placas"     value={placas}   onChange={e=>onChange(e)} label="Placas"  variant="outlined" margin="dense" fullWidth required />
          </form>
         </DialogContent>
         <DialogActions>

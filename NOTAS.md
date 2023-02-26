@@ -1,15 +1,21 @@
-## ACTUALIZAR
+##
 
-- CAMBIAR FORMATO DE DATEPICKER A DD/MM/YYYY [INSTALAR_FORMATOS]
-- VALIDAR API POR IP PRIVADA Y PUBLICA.
+### Instalar yarn para descargar las paqueterias de desarrollador
 
-- AGREGAR CAMPOS (FORMATO DE TIME) NOVAMEX -> CHECKPOINT, HORA ENTREGA USA [LISTO]
-- ORDEN CONSECUTIVO ASC 1,2,3... [LISTO]
-- AGREGAR ESTATUS [LISTO]
-    - VACIO
-    - AMARILLO: PROCESO
-    - NARANJA: PENDIENTE DE CRUCE
-    - VERDE: FINALIZADO
+Ejecutar la siguiente instruccion si se usar la paqueteria yarn:
+	
+	    yarn
 
-- REDUCIR TAMAÑO DEL CAMPO DE LAS HORAS. [LISTO]
-- MODIFICAR CAMPO IMPORLOT POR SALIDA ADUANA AMERICANA [LISTO]
+Se descargara la carpeta de "node_modules" necesario para el desarrollo en local.
+
+
+El proyecto se incia con:
+
+        yarn dev
+
+
+Para compilar los archivos para produccion se usa la instruccion:
+
+        yarn build
+
+Se genera la carpeta "dist" con los archivos compilados.

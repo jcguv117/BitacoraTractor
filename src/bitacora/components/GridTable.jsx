@@ -81,9 +81,9 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
   }
   
   const initialValue = {
-    tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", 
+    tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", hra_fila: "", aduana: "", no_sello: "", 
     hra_llegada: "", hra_salida: "", hra_rojo_mex: "", hra_verde_mex: "", hra_rojo_ame: "", ent_insp: "", sello_nuevo: "",
-    imporlot: "", hra_entrega: "", checkpoint: "", hra_entrega_usa: "", placas: "" }
+    imporlot: "", hra_entrega: "", checkpoint: "", hra_entrega_usa: "", placas: "", observacion: "", sistema: "" }
     
     const GridTable = ({Permission}) => {
     const permission = useContext(Permission);
@@ -273,6 +273,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       { field: "origen"   , editable:false, minWidth: 150  },
       { field: "destino"  , editable:false, minWidth: 150 },
       { field: "tipo"     , editable:false, minWidth: 150  },
+      { field: "hra_fila"  , headerName:"Hora Fila"   , cellEditorSelector: cellEditorSelector },
       { field: "aduana"   , editable:false },
       { field: "no_sello",  headerName:"# Sello", editable:false, minWidth: 150  },
       { field: "hra_llegada"  , headerName:"Hora Llegada Enganche"   , cellEditorSelector: cellEditorSelector },
@@ -286,7 +287,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       { field: "hra_entrega"  , headerName:"Hora Entrega"   , cellEditorSelector: cellEditorSelector },
       { field: "checkpoint", headerName: "Check point" , cellEditorSelector: cellEditorSelector },
       { field: "hra_entrega_usa"  , headerName:"Hora Entrega USA"   , cellEditorSelector: cellEditorSelector },
-      { field: "placas", minWidth: 150},
+      { field: "placas", minWidth: 150, editable:false},
       { field: "observacion", minWidth: 250 },
       { field: "sistema" }
     ]);
@@ -312,11 +313,12 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
 
     const onBtnExport = useCallback(() => {
       let fecha = formatFechaExport(document.querySelector('#datePicker').value);
+      let keys = ['estado','id'];
+      Object.keys(initialValue).forEach(prop => keys.push(prop));
       gridRef.current.api.exportDataAsCsv(
         {
           fileName: "exportacion_"+fecha,
-          columnKeys: ['estado','id', 'tractor', 'operador', 'caja', 'cliente', 'origen', 'destino', 'tipo', 'aduana', 'no_sello', 'hra_llegada', 
-                        'hra_salida', 'hra_rojo_mex', 'hra_verde_mex', 'hra_rojo_ame', 'ent_insp', 'sello_nuevo', 'imporlot', 'hra_entrega', 'checkpoint', 'hra_entrega_usa', 'placas', 'observacion', 'sistema']
+          columnKeys: keys
         }
       );
     }, []);

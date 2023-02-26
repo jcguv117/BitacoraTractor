@@ -21,3 +21,9 @@
   .swal2-shown div.swal2-container{
     z-index: 1360;
   }
+
+  .ag-theme-alpine {
+    --ag-font-size: 18px;
+    --ag-font-family: Arial;
+    font-weight: 600;
+  }

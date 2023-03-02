@@ -252,18 +252,18 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
 
     const [columnDefs, setColumnDefs] = useState([
       {
-        field: "estado", headerName: "Estado", filter: false, minWidth: 120, 
-        cellEditor: 'agSelectCellEditor',
-        cellEditorParams: {
-          values: estados,
-        },
-      },
-      {
         headerName: "Acciones", sortable: false, editable:false, filter: false, minWidth: 170, 
         cellRenderer: (params) => <div>
           <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><FontAwesomeIcon icon={faPen}/></Button>
           <Button variant="outlined" color="secondary" onClick={() => handleDeleteMov(params.data)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
         </div>
+      },
+      {
+        field: "estado", headerName: "Estado", filter: false, minWidth: 120, 
+        cellEditor: 'agSelectCellEditor',
+        cellEditorParams: {
+          values: estados,
+        },
       },
       { field: "id", headerName:"#", editable:false, minWidth: 80 },
       { field: "tractor"  , editable:false },
@@ -273,11 +273,12 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       { field: "origen"   , editable:false, minWidth: 150  },
       { field: "destino"  , editable:false, minWidth: 150 },
       { field: "tipo"     , editable:false, minWidth: 150  },
-      { field: "hra_fila"  , headerName:"Hora Fila"   , cellEditorSelector: cellEditorSelector },
       { field: "aduana"   , editable:false },
       { field: "no_sello",  headerName:"# Sello", editable:false, minWidth: 150  },
+      { field: "placas", minWidth: 150, editable:false},
       { field: "hra_llegada"  , headerName:"Hora Llegada Enganche"   , cellEditorSelector: cellEditorSelector },
       { field: "hra_salida"   , headerName:"Hora Salida Patio"    , cellEditorSelector: cellEditorSelector },
+      { field: "hra_fila"  , headerName:"Hora Fila"   , cellEditorSelector: cellEditorSelector },
       { field: "hra_rojo_mex" , headerName:"Hora Rojo Mex"  , cellEditorSelector: cellEditorSelector },
       { field: "hra_verde_mex", headerName:"Hora Verde Mex" , cellEditorSelector: cellEditorSelector },
       { field: "hra_rojo_ame" , headerName:"Hora Rojo Ame"  , cellEditorSelector: cellEditorSelector },
@@ -287,9 +288,8 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       { field: "hra_entrega"  , headerName:"Hora Entrega"   , cellEditorSelector: cellEditorSelector },
       { field: "checkpoint", headerName: "Check point" , cellEditorSelector: cellEditorSelector },
       { field: "hra_entrega_usa"  , headerName:"Hora Entrega USA"   , cellEditorSelector: cellEditorSelector },
-      { field: "placas", minWidth: 150, editable:false},
       { field: "observacion", minWidth: 250 },
-      { field: "sistema" }
+      // { field: "sistema" }
     ]);
 
     const defaultColDef = useMemo(() => {

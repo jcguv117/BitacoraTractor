@@ -23,7 +23,11 @@
   }
 
   .ag-theme-alpine {
-    --ag-font-size: 18px;
+    --ag-font-size: 16px;
     --ag-font-family: Arial;
     font-weight: 600;
+  }
+
+  .ag-theme-alpine .ag-cell{
+    padding: 0;
   }

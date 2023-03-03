@@ -83,13 +83,14 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
   const initialValue = { tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", placas: ""}
   const allValues = { ...initialValue, hra_llegada: "", hra_salida: "", hra_fila: "", hra_rojo_mex: "", hra_verde_mex: "", hra_rojo_ame: "", ent_insp: "", sello_nuevo: "",
     imporlot: "", hra_entrega: "", checkpoint: "", hra_entrega_usa: "", observacion: "", sistema: "" }
-    
+  const editValues = {flag: false, oldValue: "", fieldName: ""};
+
     const GridTable = ({Permission}) => {
     const permission = useContext(Permission);
     const [gridApi, setGridApi] = useState(null);
     const [tableData, setTableData] = useState(null);
     const [open, setOpen] = useState(false);
-    const [editGridCell, setEditGridCell] = useState(false);
+    const [editGridCell, setEditGridCell] = useState(editValues);
     const [formData, setFormData] = useState({...initialValue, idcaptura: "", fecha: ""});
 
     const [startDate, setStartDate] = useState(new Date());
@@ -120,12 +121,13 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     useEffect(() => {
       setInterval(() => {
         getMovimientosBTN();
-      }, 300000); //5 min
+        console.log("refresh data");
+      }, 15000); //5 min
     }, [])
 
     useEffect(() => {
-      editGridCell && handleUpdateMov();
-      setEditGridCell(false);
+      editGridCell.flag && handleUpdateMov();
+      setEditGridCell(editValues);
     }, [formData])
 
 
@@ -187,13 +189,12 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
   const handleDeleteMov = async(params) => {
     const {idcaptura, fecha, id} = params.data;
     if(!validarPermiso(permission, "remove")) return;
-    const confirm = confirmCustomSwal("¿Está seguro/a de borrar el registro?")
+    confirmCustomSwal("¿Está seguro/a de borrar el registro?")
       .then(async (result) => {
         if (result.isConfirmed) {
           await appApi.delete('/movimientos', { params: { captura: idcaptura, fecha: fecha, id: id } })
           .then(resp =>{
-            getMovimientos(fecha, idcaptura)
-            ensureIndexVisible(params.rowIndex -1);
+            getMovimientos(fecha, idcaptura).then(() => ensureIndexVisible(params.rowIndex -1));
             customSwal('Registro Eliminado...')
           });
         }
@@ -213,8 +214,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
             await appApi.put('/movimientos', {...data, id: id, idcaptura: dataCaptura, fecha: startDate})
               .then(resp => {
                 handleClose()
-                getMovimientos()
-                ensureIndexVisible(formData.index);
+                getMovimientos().then(() => ensureIndexVisible(formData.index));
                 customSwal('Registro Actualizado...')
               })
             }
@@ -245,30 +245,33 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     if (formData.id) {
       //updating 
       if(!validarPermiso(permission, "update")) return;
-      const confirm = confirmCustomSwal("¿Está seguro/a de actualizar el registro?")
-      .then(async (result) => {
-        if (result.isConfirmed) { 
-          await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
-          .then(resp => {
-            handleClose()
-            getMovimientos()
-            customSwal('Registro Actualizado...');
-            ensureIndexVisible(formData.index);
-          })
-        }
-        else 
-          getMovimientos();
-      });
-      setEditGridCell(false);
+      confirmCustomSwal("¿Está seguro/a de actualizar el registro?")
+        .then(async (result) => {
+          if (result.isConfirmed) { 
+            await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
+            .then(resp => {
+              handleClose()
+              getMovimientos().then(() => ensureIndexVisible(formData.index));
+              customSwal('Registro Actualizado...');
+            })
+          }
+          else {
+            let row = gridRef.current.api.getDisplayedRowAtIndex(formData.index);
+            row.data[editGridCell.fieldName] = editGridCell.oldValue;
+            gridRef.current.api.redrawRows({ rowNodes: [row] });
+            getMovimientos();
+          }
+        });
+      setEditGridCell(editValues);
     } 
   }
 
     const [columnDefs, setColumnDefs] = useState([
       {
         headerName: "Acciones", sortable: false, editable:false, filter: false, minWidth: 170, 
-        cellRenderer: (params) => <div>
-          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params)}><FontAwesomeIcon icon={faPen}/></Button>
-          <Button variant="outlined" color="secondary" onClick={() => handleDeleteMov(params)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
+        cellRenderer: (params) => <div align="center">
+          <Button className='mx-1' variant="contained" color="primary" onClick={() => handleUpdate(params)}><FontAwesomeIcon icon={faPen}/></Button>
+          <Button className='mx-1' variant="contained" color="error" onClick={() => handleDeleteMov(params)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
         </div>
       },
       {
@@ -352,8 +355,9 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
 
     const onCellValueChanged= useCallback((event) => {
       const {newValue, oldValue, data} = event;
-      (newValue != oldValue) && setFormData({[event.column.userProvidedColDef.field]: newValue.toUpperCase(), id: data.id, index: event.rowIndex });
-      (newValue != oldValue) && setEditGridCell(true);
+      const field = event.column.userProvidedColDef.field;
+      (newValue != oldValue) && setFormData({[field]: newValue.toUpperCase(), id: data.id, index: event.rowIndex });
+      (newValue != oldValue) && setEditGridCell({flag: true, oldValue: oldValue, fieldName: field});
     }, []);
 
     const updateItems = useCallback(async() => {

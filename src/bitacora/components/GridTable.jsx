@@ -80,10 +80,9 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     });
   }
   
-  const initialValue = {
-    tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", hra_fila: "", aduana: "", no_sello: "", 
-    hra_llegada: "", hra_salida: "", hra_rojo_mex: "", hra_verde_mex: "", hra_rojo_ame: "", ent_insp: "", sello_nuevo: "",
-    imporlot: "", hra_entrega: "", checkpoint: "", hra_entrega_usa: "", placas: "", observacion: "", sistema: "" }
+  const initialValue = { tractor: "", operador: "", caja: "", cliente: "", origen: "", destino: "", tipo: "", aduana: "", no_sello: "", placas: ""}
+  const allValues = { ...initialValue, hra_llegada: "", hra_salida: "", hra_fila: "", hra_rojo_mex: "", hra_verde_mex: "", hra_rojo_ame: "", ent_insp: "", sello_nuevo: "",
+    imporlot: "", hra_entrega: "", checkpoint: "", hra_entrega_usa: "", observacion: "", sistema: "" }
     
     const GridTable = ({Permission}) => {
     const permission = useContext(Permission);
@@ -192,24 +191,26 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
   }
 
   const handleFormSubmitMov = async() => {
-    const { tipo, sello_nuevo, placas } = formData;
-    if (formData.id) {
+    const { tipo, sello_nuevo, placas, id } = formData;
+    const data = {};
+    if (id) {
       if(!validarPermiso(permission, "update")) return;
       //updating movimiento
-      const confirm = confirmCustomSwal("¿Está seguro/a de actualizar el registro?")
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          await appApi.put('/movimientos', {...formData, idcaptura: dataCaptura, fecha: startDate})
-            .then(resp => {
-              handleClose()
-              getMovimientos()
-              customSwal('Registro Actualizado...')
-            })
-          }
-        });
+      confirmCustomSwal("¿Está seguro/a de actualizar el registro?")
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            Object.keys(initialValue).forEach(prop => data[prop] = formData[prop] )
+            await appApi.put('/movimientos', {...data, id: id, idcaptura: dataCaptura, fecha: startDate})
+              .then(resp => {
+                handleClose()
+                getMovimientos()
+                customSwal('Registro Actualizado...')
+              })
+            }
+          });
     } 
     else {
-  
+
       if(!validarPermiso(permission, "add")) return;
       //validacion de tipo movimiento diferente
       if(tipo.trim() != "EXPO" && tipo.trim() != "IMPO") {
@@ -314,7 +315,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     const onBtnExport = useCallback(() => {
       let fecha = formatFechaExport(document.querySelector('#datePicker').value);
       let keys = ['estado','id'];
-      Object.keys(initialValue).forEach(prop => keys.push(prop));
+      Object.keys(allValues).forEach(prop => keys.push(prop));
       gridRef.current.api.exportDataAsCsv(
         {
           fileName: "exportacion_"+fecha,
@@ -339,7 +340,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
 
     const onCellValueChanged= useCallback((event) => {
       const {newValue, oldValue, data} = event;
-      (newValue != oldValue) && setFormData({...data, [event.column.userProvidedColDef.field]: newValue.toUpperCase() });
+      (newValue != oldValue) && setFormData({[event.column.userProvidedColDef.field]: newValue.toUpperCase(), id: data.id  });
       (newValue != oldValue) && setEditGridCell(true);
     }, []);
 

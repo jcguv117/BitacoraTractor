@@ -127,14 +127,14 @@ import Swal from 'sweetalert2';
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const [columnDefs, setColumnDefs] = useState([
       {
-        headerName: "Acciones", sortable: false, filter: false, minWidth: 170, 
-        cellRenderer: (params) => <div>
-          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><FontAwesomeIcon icon={faPen}/></Button>
-          <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.data)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
+        headerName: "Acciones", sortable: false, filter: false, maxWidth: 170, minWidth: 150, 
+        cellRenderer: (params) => <div align="center">
+          <Button className="mx-1" variant="contained" color="primary" onClick={() => handleUpdate(params.data)}><FontAwesomeIcon icon={faPen}/></Button>
+          <Button className="mx-1" variant="contained" color="error" onClick={() => handleDelete(params.data)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
         </div>
       },
       { field: "id", headerName:"#", sort: 'desc' , maxWidth: 70},
-      { headerName:"Usuario", field: "user"},
+      { headerName:"Usuario", field: "user", maxWidth: 200},
       { headerName:"Nombre", field: "name" },
       { headerName:"Contraseña", field: "password", hide: true },
       { headerName: "Permiso", field: "permiso" , maxWidth: 150,
@@ -160,7 +160,7 @@ import Swal from 'sweetalert2';
           <div className="grid-wrapper">
           <Grid align="right" className='d-flex justify-content-end gap-3 p-2'>
             <Tooltip title="Agregar Usuario">
-              <Button variant="contained" color="primary" onClick={handleClickOpen}><FontAwesomeIcon icon={faUserPlus}/></Button>
+              <Button className='m-2 p-2' variant="contained" color="primary" onClick={handleClickOpen}><FontAwesomeIcon icon={faUserPlus}/></Button>
             </Tooltip>
           </Grid>
             <div style={gridStyle} className="ag-theme-alpine">
@@ -169,7 +169,6 @@ import Swal from 'sweetalert2';
                 rowData={tableData}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
-                pagination={true}
               ></AgGridReact>
             </div>
             <FormDialog open={open} handleClose={handleClose}

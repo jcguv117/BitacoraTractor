@@ -45,7 +45,7 @@ import { useState } from 'react';
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{id?"Actualizar":"Agregar Movimiento"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{id?"Actualizar Movimiento #"+id:"Agregar Movimiento"}</DialogTitle>
         <DialogContent>
          <form>
             <TextField id="tractor"    value={tractor}  onChange={e=>onChange(e)} label="Tractor"   variant="outlined" margin="dense" fullWidth required type="number"/>

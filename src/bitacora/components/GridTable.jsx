@@ -135,13 +135,15 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       const captura = (idcaptura) ? idcaptura : dataCaptura;
         const { data } = await appApi.post('/movimientos', {captura, fecha});
         setTableData(data);
+        return data.length || 0;
     }
 
-    const getMovimientosBTN =async() => {
+    const getMovimientosBTN = async() => {
       const fecha = formatFecha(document.querySelector('#datePicker').value);
       const captura = parseInt(document.querySelector('#capturaSelect').value);
       const { data } = await appApi.post('/movimientos', {captura, fecha});
       setTableData(data);
+      return data.length || 0;
     }
 
 
@@ -169,14 +171,21 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       setGridApi(params)
     }
 
+    const ensureIndexVisible = (id) => {
+      setTimeout(() => {
+        gridRef.current.api.ensureIndexVisible(id, 'middle');
+      }, 1000);
+    }
+
   // setting update row data to form data and opening pop up window
-  const handleUpdate = (oldData) => {
+  const handleUpdate = (params) => {
+    let oldData = {...params.data, index: params.rowIndex}; //added row index 
     setFormData(oldData)
     handleClickOpen("update")
   }
 
-  const handleDeleteMov = async(data) => {
-    const {idcaptura, fecha, id} = data;
+  const handleDeleteMov = async(params) => {
+    const {idcaptura, fecha, id} = params.data;
     if(!validarPermiso(permission, "remove")) return;
     const confirm = confirmCustomSwal("¿Está seguro/a de borrar el registro?")
       .then(async (result) => {
@@ -184,6 +193,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
           await appApi.delete('/movimientos', { params: { captura: idcaptura, fecha: fecha, id: id } })
           .then(resp =>{
             getMovimientos(fecha, idcaptura)
+            ensureIndexVisible(params.rowIndex -1);
             customSwal('Registro Eliminado...')
           });
         }
@@ -204,6 +214,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
               .then(resp => {
                 handleClose()
                 getMovimientos()
+                ensureIndexVisible(formData.index);
                 customSwal('Registro Actualizado...')
               })
             }
@@ -223,7 +234,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       await appApi.post('/movimientos/new', {...formData, idcaptura: dataCaptura, fecha: startDate})
         .then(resp => {
           handleClose()
-          getMovimientos()
+          getMovimientosBTN().then(i => ensureIndexVisible(i-1)); //return data and scroll last row. 
           customSwal('Registro Guardado...')
         })
     }
@@ -242,6 +253,7 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
             handleClose()
             getMovimientos()
             customSwal('Registro Actualizado...');
+            ensureIndexVisible(formData.index);
           })
         }
         else 
@@ -255,8 +267,8 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
       {
         headerName: "Acciones", sortable: false, editable:false, filter: false, minWidth: 170, 
         cellRenderer: (params) => <div>
-          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><FontAwesomeIcon icon={faPen}/></Button>
-          <Button variant="outlined" color="secondary" onClick={() => handleDeleteMov(params.data)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
+          <Button variant="outlined" color="primary" onClick={() => handleUpdate(params)}><FontAwesomeIcon icon={faPen}/></Button>
+          <Button variant="outlined" color="secondary" onClick={() => handleDeleteMov(params)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
         </div>
       },
       {
@@ -340,13 +352,13 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
 
     const onCellValueChanged= useCallback((event) => {
       const {newValue, oldValue, data} = event;
-      (newValue != oldValue) && setFormData({[event.column.userProvidedColDef.field]: newValue.toUpperCase(), id: data.id  });
+      (newValue != oldValue) && setFormData({[event.column.userProvidedColDef.field]: newValue.toUpperCase(), id: data.id, index: event.rowIndex });
       (newValue != oldValue) && setEditGridCell(true);
     }, []);
 
     const updateItems = useCallback(async() => {
       getMovimientosBTN();
-    }, []);
+    }, []); 
 
     //fix navbar show up, overflow hidden
     document.querySelector("body").style.overflow = "auto";

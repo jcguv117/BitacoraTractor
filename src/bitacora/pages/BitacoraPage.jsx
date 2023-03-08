@@ -11,8 +11,6 @@ export const BitacoraPage = () => {
   return (
     <div className='container-fluid mb-4 p-2'>
         <Navbar/>
-        <br />
-        <br />
         <Permission.Provider value={user.permiso}>
           <GridTable Permission={Permission}/>
         </Permission.Provider>

@@ -121,7 +121,6 @@ import AG_GRID_LOCALE_CUSTOM from '../ag_grid_locale';
     useEffect(() => {
       setInterval(() => {
         getMovimientosBTN();
-        console.log("refresh data");
       }, 15000); //5 min
     }, [])
 

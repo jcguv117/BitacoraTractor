@@ -1,11 +1,10 @@
 import axios from 'axios';
 
-
-const { VITE_API_URL } = import.meta.env;
-
+const { VITE_API_URL, VITE_API_URL_PROD } = import.meta.env;
+const BASE_URL = window.location.hostname == "localhost" ? VITE_API_URL_PROD : VITE_API_URL;
 
 const appApi = axios.create({
-    baseURL: VITE_API_URL
+    baseURL: BASE_URL
 });
 
 // Todo: configurar interceptores

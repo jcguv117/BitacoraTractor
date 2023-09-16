@@ -24,7 +24,6 @@ import FormDialog from './DialogForm';
     }, [])
 
     useEffect(() => {
-      console.log("useEffect")
       editGridCell && handleTest();
     }, [formData])
 
@@ -59,7 +58,6 @@ import FormDialog from './DialogForm';
     }
   }
   const handleTest = () => {
-    console.log("formData ID:",formData.id);
     if (formData.id) {
       //updating a user 
       const confirm = window.confirm("¿Está seguro/a de actualizar el registro?")
@@ -76,7 +74,6 @@ import FormDialog from './DialogForm';
   }
 
   const handleFormSubmit = () => {
-    console.log("formData ID:",formData.id);
     if (formData.id) {
       //updating a user 
       const confirm = window.confirm("¿Está seguro/a de actualizar el registro?")
@@ -155,22 +152,13 @@ import FormDialog from './DialogForm';
       gridRef.current.api.exportDataAsCsv();
     }, []);
     
-    const onCellEditingStarted = useCallback((event) => {
-      console.log('cellEditingStarted');
-      // console.log(event);
-    }, []);
-
     const onCellValueChanged= useCallback((event) => {
       const {newValue, oldValue, data} = event;
-      console.log('onCellValueChanged');
-      console.log(event);
       (newValue != oldValue) && setFormData({...data, [event.column.userProvidedColDef.field]: newValue.toUpperCase() });
       (newValue != oldValue) && setEditGridCell(true);
-      console.log({...data, [event.column.userProvidedColDef.field]: newValue });
     }, []);
 
     const onCellEditingStopped = useCallback((event) => {
-      console.log('cellEditingStopped');
       const {data, value, valueChanged} = event;
       valueChanged && setFormData({...data, [event.column.userProvidedColDef.field]: value });
       valueChanged && setEditGridCell(true);
@@ -195,9 +183,7 @@ import FormDialog from './DialogForm';
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
                 pagination={true}
-                // onCellEditingStarted={onCellEditingStarted}
                 onCellValueChanged={onCellValueChanged}
-                // onCellEditingStopped={onCellEditingStopped}
               ></AgGridReact>
             </div>
             <FormDialog open={open} handleClose={handleClose}
